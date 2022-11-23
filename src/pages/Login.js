@@ -1,0 +1,393 @@
+import React, { Component } from "react";
+import { withTranslation } from 'react-i18next';
+
+import { StyleSheet, ImageBackground, Image, I18nManager, View, Alert } from 'react-native'
+import {
+    Container,
+    Header,
+    Title,
+    Content,
+    Button,
+    Icon,
+    Text,
+    Body,
+    Left,
+    Right,
+    Item,
+    Input,
+    Form,
+    Footer,
+    FooterTab
+} from "native-base";
+import DropShadow from "react-native-drop-shadow";
+import FooterBottom from "./Footer";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { AsyncStorage } from 'react-native';
+import API from "../api/";
+import Axios from 'axios'
+import i18n from "../i18n";
+import RNRestart from 'react-native-restart';
+import Social from "../../src1/pages/components/social";
+
+
+
+var FormData = require('form-data');
+
+class Login extends Component {
+
+    constructor(props) {
+        //Icon.loadFont();
+        super(props);
+
+        this.state = {
+            rtl: false,
+            username: null,
+            password: null
+        };
+        this.checkLastLogin()
+    }
+
+    componentDidMount() {
+        if (I18nManager.isRTL === true) {
+            this.setState({ rtl: true })
+        } else {
+            this.setState({ rtl: false })
+        }
+    }
+    checkLastLogin = async () => {
+        let token = await AsyncStorage.getItem("@moqc:token");
+        let is_student = await AsyncStorage.getItem("is_student")
+        console.log("is_student", is_student)
+        if (token) {
+            Axios.defaults.headers.common['token'] = token
+            if (is_student == 0) {
+                this.props.navigation.navigate("Home")
+            }
+            else {
+                let class_id = await AsyncStorage.getItem("class_id")
+                this.props.navigation.navigate("HomeStudent", { class_id: class_id })
+            }
+        }
+    }
+    save_info = async (info) => {
+        console.log(info)
+        await AsyncStorage.setItem("@moqc:token", info.result.token);
+        await AsyncStorage.setItem("@moqc:username", info.result.user.username);
+        await AsyncStorage.setItem("@moqc:user_id", info.result.user.id);
+        await AsyncStorage.setItem("@moqc:first_name", info.result.user.first_name);
+        await AsyncStorage.setItem("@moqc:last_name", info.result.user.last_name);
+        await AsyncStorage.setItem("@moqc:email", info.result.user.email);
+        await AsyncStorage.setItem("@moqc:page_access", JSON.stringify(info.result.user.page_access));
+        await AsyncStorage.setItem("@moqc:photo", info.result.user.photo);
+        await AsyncStorage.setItem("role", info.result.role)
+        await AsyncStorage.setItem("is_student", JSON.stringify(info.result.is_student))
+
+        Axios.defaults.headers.common['token'] = info.result.token
+        
+        if (info.result.is_student == 1) {
+            await AsyncStorage.setItem("class_id", info.result.user.student_class)
+            
+           // this.props.navigation.navigate("HomeStudent", { class_id: info.result.user.student_class })
+        }
+        else {
+           
+          //  this.props.navigation.navigate("Home")
+           
+        }
+        await RNRestart.Restart();
+    }
+
+
+    checkLogin = async () => {
+        this.setState({ show_spinner: true })
+
+        const formData = new FormData();
+        formData.append('username', this.state.username);
+        formData.append('password', this.state.password);
+
+        API.login(formData)
+            .then(resp => {
+                this.setState({ show_spinner: false })
+                if (resp.status == false) {
+                    Alert.alert(
+                        "Error",
+                        "something went wrong please check email/password",
+                        [
+                            { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ],
+                        { cancelable: false }
+                    );
+                } else {
+                    Alert.alert(
+                        "Success Message",
+                        resp.result.message,
+                        [
+                            { text: "OK", onPress: () => this.save_info(resp) }
+                        ],
+                        { cancelable: false }
+                    );
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                alert(err)
+            });
+
+    }
+    render() {
+        const { t, i18n } = this.props;
+        console.log(this.state.username)
+        return (
+            <Container
+                style={{
+                    display: 'flex',
+                    flex: 10,
+                    direction: this.state.rtl
+                        ? 'rtl'
+                        : 'ltr'
+                }}>
+
+                <ImageBackground
+                    source={require('../assets/bg_img.png')}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        flex: 10
+                    }}>
+
+                    <View
+                        style={{
+                            backgroundColor: '#31314f',
+                            borderBottomColor: '#31314f',
+                            height:120
+                        }}>
+
+
+
+                        <Title
+                            style={{
+                                flex: 1,
+                                marginTop: 10,
+                                color: '#8f7c7b',
+                                textAlign: "center"
+                            }}>{i18n.t('Members')}</Title>
+
+
+
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: '#31314f',
+                            flex: 0.1,
+                        }}
+                    >
+                        <View
+                            style={{
+                                flex: 1,
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}>
+                            <Image
+                                style={{
+                                    height: 150,
+                                    width: 150,
+                                    marginTop: 100
+                                }}
+                                source={require('../assets/round.png')} />
+
+                            <Text style={{ marginTop: 5, color: "#ed9995", fontSize: 22, fontWeight: "600" }}>{i18n.t('SIGN IN')}</Text>
+
+                        </View>
+
+                    </View>
+
+                    <View
+                        padder
+                        style={{
+                            flex: 14,
+                            marginTop: 120
+                        }}>
+                        <View style={{
+                            flex: 2,
+                            marginTop: 20
+
+                        }}>
+                        </View>
+
+                        <Form style={{
+                            flex: 10,
+
+                        }}>
+                            <DropShadow
+                                style={{
+                                    shadowColor: "#31314f",
+                                    shadowOffset: {
+                                        width: -10,
+                                        height: 5
+                                    },
+                                    shadowOpacity: 0.3,
+                                    shadowRadius: 8,
+                                    borderRadius: 40,
+
+                                }}>
+                                <View
+                                    style={{
+                                        elevation: 1,
+
+                                        borderColor: "#fff",
+                                        borderRadius: 30,
+                                        backgroundColor: "white",
+                                        padding: 20,
+                                        borderBottomColor: "black",
+                                        marginRight: 30,
+                                        marginLeft: 30
+                                    }}
+                                >
+
+
+                                    <Item
+                                        style={{
+                                            elevation: 0,
+                                            borderColor: "#fff",
+                                            borderRadius: 0,
+                                            backgroundColor: "white",
+                                            padding: 5,
+                                            borderBottomColor: "black"
+                                        }}>
+                                        <Icon active type="FontAwesome" name="user" />
+                                        <Input
+                                            style={{
+                                                textAlign: this.state.rtl
+                                                    ? 'right'
+                                                    : 'left'
+                                            }}
+                                            value={this.state.username}
+                                            onChangeText={(username) => this.setState({ username })}
+                                            placeholder={i18n.t("Username")} />
+                                    </Item>
+
+                                    <Item
+                                        style={{
+                                            elevation: 0,
+                                            borderColor: "#fff",
+                                            borderRadius: 0,
+                                            backgroundColor: "white",
+                                            padding: 5,
+                                            borderBottomColor: "black"
+                                        }}>
+                                        <Icon active type="FontAwesome" name="lock" />
+                                        <Input
+                                            style={{
+                                                textAlign: this.state.rtl
+                                                    ? 'right'
+                                                    : 'left'
+                                            }}
+                                            secureTextEntry={true}
+                                            value={this.state.password}
+                                            onChangeText={(password) => this.setState({ password })}
+                                            placeholder={i18n.t("Password")} />
+                                    </Item>
+
+                                </View>
+
+
+                            </DropShadow>
+                        </Form>
+                        <View
+                            style={{
+                                flex: 1,
+                                jusifyContent: 'center',
+                                alignItems: "center",
+                                marginTop: 45,
+                                fontWeight: "bold",
+                            }}>
+                            <Text>{i18n.t('Dont have an account?')} <Text></Text>
+                                <Text
+                                    onPress={() => this.props.navigation.navigate("Register")}
+                                    style={{
+                                        color: '#ed9995',
+                                        fontWeight: "bold"
+                                    }}>
+                                    {i18n.t('REGISTER')}</Text>
+                            </Text>
+
+                        </View>
+                        <View
+                            style={{
+                                marginTop: 15,
+                                marginBottom: 45,
+                                flex: 2,
+                                justifyContent: "space-evenly",
+                                alignItems: "center",
+                                flexDirection: "row",
+                            }}>
+                            <TouchableOpacity
+                                style={{
+                                    width: 150,
+                                    padding: 0,
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    backgroundColor: "transparent",
+                                    borderColor: "transparent"
+
+                                }}
+                                onPress={() => this.props.navigation.navigate("Register")}
+
+                            >
+                                <Text style={{ fontWeight: "bold", color: "#ed9995" }}>{i18n.t('REGISTER')} <Icon style={{ fontSize: 14, color: "#ed9995" }} type="AntDesign" name="right" /></Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={(e) => this.checkLogin()}
+                            >
+                                <View
+                                    style={{
+                                        elevation: 1,
+
+                                        borderColor: "#fff",
+                                        borderRadius: 30,
+                                        backgroundColor: "white",
+                                        padding: 1,
+                                        borderBottomColor: "black",
+                                        marginRight: 30,
+                                        marginLeft: 30,
+                                        marginTop: 0,
+                                        marginBottom: 10,
+                                        width: 150,
+                                        padding: 10,
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+
+
+                                    <Text style={{ fontWeight: "bold" }}>{i18n.t('SIGN IN')}
+                                        <Icon style={{ fontSize: 14 }} type="AntDesign" name="right" /></Text>
+
+                                </View>
+
+
+
+                            </TouchableOpacity>
+
+                        </View>
+
+
+
+
+
+
+                        <Social/>
+                    </View>
+                </ImageBackground>
+
+                {/* <FooterBottom {...this.props}/> */}
+            </Container>
+        );
+    }
+}
+
+export default withTranslation()(Login);
