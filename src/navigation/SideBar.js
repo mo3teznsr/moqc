@@ -17,9 +17,9 @@ import RNRestart from 'react-native-restart';
 
 import { AsyncStorage } from 'react-native';
 
-import {DrawerContentScrollView, DrawerItemList, DrawerItem} from '@react-navigation/drawer';
+//import {DrawerContentScrollView, DrawerItemList, DrawerItem} from '@react-navigation/drawer';
 import {Content} from 'native-base';
-import Social from '../../src1/pages/components/social';
+import Social from '../pages/components/social';
 
 const SideBar = (props) => {
     const BASE_PATH = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/';

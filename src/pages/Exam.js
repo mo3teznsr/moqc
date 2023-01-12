@@ -14,9 +14,8 @@ import {
     Alert,
     FlatList
 } from 'react-native';
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker, Form } from 'native-base';
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker as SelectPicker, Form } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import DocumentPicker from "react-native-document-picker";
 import ActionButton from 'react-native-action-button';
 import Axios from 'axios'
 
@@ -224,13 +223,13 @@ class Exam extends React.Component {
                                 <View style={{ marginVertical: 10 }}>
                                     <Text>{i18n.t('Course')}</Text>
                                     <View style={{ padding: 10, justifyContent: 'center', height: 40, width: '100%', borderWidth: 1, borderRadius: 10, }}>
-                                        <Picker
+                                        <SelectPicker
                                             style={{ height: 50, width: 150 }}
                                             onValueChange={(itemValue, itemIndex) => this.setState({ courseId: itemValue })}
                                         >
-                                            <Picker.Item label="Java" value="java" />
-                                            <Picker.Item label="JavaScript" value="js" />
-                                        </Picker>
+                                            <SelectPicker.Item label="Java" value="java" />
+                                            <SelectPicker.Item label="JavaScript" value="js" />
+                                        </SelectPicker>
                                     </View>
                                 </View>
 

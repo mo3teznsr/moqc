@@ -8,13 +8,14 @@ import {
     SafeAreaView,
     ImageBackground,
     Image,
-    Dimensions
+    Dimensions,
+    ActivityIndicator
 } from 'react-native';
 import { withTranslation } from 'react-i18next';
 import RNRestart from 'react-native-restart';
 import { AsyncStorage } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native';
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, ListItem, CheckBox, SwipeRow } from 'native-base';
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, ListItem, CheckBox, SwipeRow, Spinner } from 'native-base';
 import GetLocation from 'react-native-get-location'
 import axios from 'axios';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -54,9 +55,14 @@ class Notifications extends React.Component {
             todayData: [],
             city: "Dubai",
             play: true,
+            notifications:[],
+            selected_items:[],
+            loading:true
         };
-        this.checkCall();
-        this.getCityName();
+      //  this.checkCall();
+      //  this.getCityName();
+      this.getNotifications()
+
     }
     checkCall = async () => {
         await this.getGeo();
@@ -82,8 +88,36 @@ class Notifications extends React.Component {
                 console.warn(code, message);
             })
     }
+
+   async getNotifications(){
+       // this.setState({loading:true})
+        let token = await AsyncStorage.getItem("@moqc:token")
+         axios.get(`https://staging.moqc.ae/api/notifications`,
+            {
+                headers: { "token": token }
+            }).then(res=>{
+                console.log(res.data)
+                this.setState({loading:false,notifications:res.data})
+            }).catch(err=>{
+                console.log('notification',err)
+            });
+    }
+
+    async delete(id){
+        // this.setState({loading:true})
+         let token = await AsyncStorage.getItem("@moqc:token")
+          axios.delete(`https://staging.moqc.ae/api/notification_delete/${id}`,
+             {
+                 headers: { "token": token }
+             }).then(res=>{
+                 console.log(res.data)
+                this.getNotifications()
+             }).catch(err=>{
+                 console.log('notification',err)
+             });
+     }
     getCityName = async () => {
-        axios.get('https://ip-api.com/json')
+        axios.get('http://ip-api.com/json')
             .then(response => {
                 this.setState({
                     city: response.data.city,
@@ -192,10 +226,7 @@ class Notifications extends React.Component {
                         flex: 10,
                         margin: 20
                     }}>
-                    <View style={{ justifyContent: "center", alignItems: "center" }}>
-                        {/* <Text style={{fontWeight:"bold",fontSize:26}}>NOTIFICATIONS</Text> */}
-                        {/* <Text style={{fontWeight:"bold",fontSize:16,marginTop:30}}>Select your Notifications and Navigate</Text> */}
-                    </View>
+                  
                     {/* <View style={{justifyContent:"center",alignItems:"center",marginTop:20,flexDirection:"row"}}>
                             <Text style={{fontWeight:"bold",fontSize:14}}>Search</Text>
                             <View style={{
@@ -217,17 +248,17 @@ class Notifications extends React.Component {
 
                     <View
                         style={{
-
                             paddingHorizontal: 10,
-
                             justifyContent: "center", alignItems: "center"
                         }}
                     >
                         <ScrollView horizontal={false}>
-                            <ListItem style={{borderColor: "white" }}>
+                            {this.notifications?.length&&!this.state.loading?this.state.notifications.map((item,index)=><ListItem ref={index} style={{borderColor: "white" ,}}>
                                 <CheckBox checked={false} color="#BEA051" style={{ borderRadius: 3 }} />
                                 <Body>
-                                    <SwipeRow
+                                    <SwipeRow onLeftAction={()=>{
+                                       this.delete(item.id)
+                                    }}
                                         rightOpenValue={-75}
                                         right={
                                             <Button danger onPress={() => alert("Trash")}>
@@ -236,66 +267,16 @@ class Notifications extends React.Component {
                                         }
                                         body={
                                             <View style={{ paddingLeft: 20 }}>
-                                                <Text>Swipe me to left and right</Text>
+                                                <Text>{item.notification_text} </Text>
                                             </View>
                                         }
                                     />
                                 </Body>
-                            </ListItem>
-                            <ListItem style={{ width: width - 80, borderColor: "white" }}>
-                                <CheckBox checked={true} color="#BEA051" style={{ borderRadius: 3 }} />
-                                <Body>
-                                    <SwipeRow
-                                        rightOpenValue={-75}
-                                        right={
-                                            <Button danger onPress={() => alert("Trash")}>
-                                                <Icon active name="trash" />
-                                            </Button>
-                                        }
-                                        body={
-                                            <View style={{ paddingLeft: 20 }}>
-                                                <Text>Swipe me to left and right</Text>
-                                            </View>
-                                        }
-                                    />
-                                </Body>
-                            </ListItem>
-                            <ListItem style={{ width: width - 80, borderColor: "white" }}>
-                                <CheckBox checked={false} color="#BEA051" style={{ borderRadius: 3 }} />
-                                <Body>
-                                    <SwipeRow
-                                        rightOpenValue={-75}
-                                        right={
-                                            <Button danger onPress={() => alert("Trash")}>
-                                                <Icon active name="trash" />
-                                            </Button>
-                                        }
-                                        body={
-                                            <View style={{ paddingLeft: 20 }}>
-                                                <Text>Swipe me to left and right</Text>
-                                            </View>
-                                        }
-                                    />
-                                </Body>
-                            </ListItem>
-                            <ListItem style={{ width: width - 80, borderColor: "white" }}>
-                                <CheckBox checked={false} color="#BEA051" style={{ borderRadius: 3 }} />
-                                <Body>
-                                    <SwipeRow
-                                        rightOpenValue={-75}
-                                        right={
-                                            <Button danger onPress={() => alert("Trash")}>
-                                                <Icon active name="trash" />
-                                            </Button>
-                                        }
-                                        body={
-                                            <View style={{ paddingLeft: 20 }}>
-                                                <Text>Swipe me to left and right</Text>
-                                            </View>
-                                        }
-                                    />
-                                </Body>
-                            </ListItem>
+                            </ListItem>):<View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+                                <Icon active name="notifications" type="MaterialIcons" style={{fontSize:180}} />
+                                <Text>{i18n.t("No notifications yet")} </Text>
+                                </View>}
+                         
                         </ScrollView>
                     </View>
                     <View>

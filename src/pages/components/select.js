@@ -21,7 +21,7 @@ const Select=(props)=>{
     return <View>
         <TouchableOpacity onPress={props.open}>
         <View style={{flexDirection:"row",justifyContent:"space-between",padding:10,marginVertical:10,borderBottomWidth:1,borderColor:"#000"}}>
-            <Text style={{fontSize:22,overflow:"hidden",fontWeight:"600",color:"#000"}}>{selected}  </Text>
+            <Text style={{fontSize:16,overflow:"hidden",fontWeight:"600",color:"#000"}}>{selected}  </Text>
             <Image source={require('../../assets/down.png')}   style={{height:20,width:20}} />
         </View>
         </TouchableOpacity>

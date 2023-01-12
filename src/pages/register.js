@@ -28,7 +28,7 @@ import Axios from 'axios'
 import i18n from "../i18n";
 import RNRestart from 'react-native-restart';
 import axios from "axios";
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
 
 
 
@@ -381,7 +381,7 @@ class Register extends Component {
 
 
                                     <Text style={{ fontWeight: "bold" }}>{i18n.t('Register')}
-                                        <Icon style={{ fontSize: 14 }} type="AntDesign" name="right" /></Text>
+                                        <Icon style={{ fontSize: 14 }} type="AntDesign" name={i18n.language=='ar'?"left":"right"} /></Text>
 
                                 </View>
 

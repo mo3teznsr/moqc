@@ -25,7 +25,8 @@ import FooterBottom from "./Footer";
 import { auto } from "async";
 
 import API from "../api/";
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
+
 var FormData = require('form-data');
 
 

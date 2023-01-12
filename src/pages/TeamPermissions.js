@@ -18,16 +18,11 @@ import RNRestart from 'react-native-restart';
 import { AsyncStorage } from 'react-native';
 import RadioButtonRN from 'radio-buttons-react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker } from 'native-base';
-import GetLocation from 'react-native-get-location'
+
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-let width = Dimensions.get('window').width
-let height = Dimensions.get('window').height
-import DropShadow from "react-native-drop-shadow";
-import Footer from "./Footer";
-import HeaderTop from "./Header";
-import API from "../api";
+
 import Axios from 'axios'
-import DocumentPicker from "react-native-document-picker";
+
 import RNFetchBlob from 'rn-fetch-blob'
 import Toast from 'react-native-simple-toast';
 import i18n from '../i18n';
@@ -159,24 +154,25 @@ class TeamPermissions extends React.Component {
                     <ImageBackground
                         source={require('../assets/bg_img.png')}
                     >
-                        <View style={{ margin: 20 }}>
+                        <View style={{ margin: 20,direction:i18n.language=='en'?'ltr':'rtl' }}>
                             {this.state.categories.map(item => {
-                                return <View>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 18, textDecorationLine: 'underline' }}>{item.name_en}</Text>
+                                return <View style={{direction:i18n.language=='en'?'ltr':'rtl'}} >
+                                    <Text style={{ fontWeight: 'bold', fontSize: 18, }}>{item['name_'+i18n.language]}</Text>
                                     {item.permissions.map(permission => {
-                                        return <View style={{ flexDirection: 'row', justifyContent: "space-between", marginVertical: 5 }}>
-                                            <Text style={{ width: '50%' }}>{permission.name_en}</Text>
-                                            <View style={{ borderRadius: 10, padding: 5, borderWidth: 1, width: '50%' }}>
+                                        return <View style={{  marginBottom:5}}>
+                                            <Text >{permission['name_'+i18n.language]}</Text>
+                                            <View style={{ borderRadius: 10, padding: 5, borderWidth: 1, width: '100%' }}>
+                                                
                                                 <Picker
-                                                    placeholder="Select One"
+                                                    placeholder={i18n.t("Select One")}
                                                     placeholderStyle={{ color: "#2874F0" }}
                                                     selectedValue={this.getSelectedValue(permission)}
-                                                    style={{ height: 20 }}
+                                                    style={{  }}
                                                     onValueChange={(itemValue, itemIndex) => this.updatePermission(permission.name, itemValue)}
                                                 >
-                                                    <Picker.Item label="None" value="none" />
-                                                    <Picker.Item label="Write" value="write" />
-                                                    <Picker.Item label="Read" value="read" />
+                                                    <Picker.Item label={i18n.t("None")} value="none" />
+                                                    <Picker.Item label={i18n.t("Write")} value="write" />
+                                                    <Picker.Item label={i18n.t("Read")} value="read" />
 
 
                                                 </Picker>

@@ -29,8 +29,12 @@ import API from "../api/";
 import Step1 from "./components/step1";
 import Step2 from "./components/step2";
 import Step3 from "./components/step3";
+import Step4 from "./components/step4";
+import Step5 from "./components/step5";
+import Step6 from "./components/step6";
 import Success from "./components/success";
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
+
 var FormData = require('form-data');
 
 class Signup1 extends Component {
@@ -76,8 +80,11 @@ class Signup1 extends Component {
     
  steps=[
     {name_en:"Gender",name_ar:"النوع"},
-    {name_en:"Profile",name_ar:"الملف الشحصي"},
-    {name_en:"Files",name_ar:"الملفات"},
+    {name_en:"Profile 1",name_ar:"الملف الشحصي"},
+    {name_en:"Profile 2",name_ar:"الملف الشحصي"},
+    {name_en:"Profile 3",name_ar:"الملف الشحصي"},
+    {name_en:"Record",name_ar:"التسجيل الصوتي"},
+    {name_en:"Files",name_ar:"الهوية"},
  ]
     componentDidMount = async() => {
         
@@ -173,6 +180,12 @@ class Signup1 extends Component {
             case 2:
             return <Step3 data={this.state} update={(data)=>this.setState(data)}  />;
             case 3:
+            return <Step4 data={this.state} update={(data)=>this.setState(data)}  />;
+            case 4:
+            return <Step5 data={this.state} update={(data)=>this.setState(data)}  />;
+            case 5:
+            return <Step6 data={this.state} update={(data)=>this.setState(data)}  />;
+            case 6:
             return <Success />
         }
     }
@@ -228,7 +241,7 @@ class Signup1 extends Component {
                             }}
                                 source={require('../assets/round.png')}/>
                                 
-                           {this.state.active_step<3? <Text style={{marginTop:5,fontWeight:"bold"}}>{t('Step')} {this.state.active_step+1}/3</Text>:<Text></Text>}
+                           {this.state.active_step<6? <Text style={{marginTop:5,fontWeight:"bold"}}>{t('Step')} {this.state.active_step+1}/6</Text>:<Text></Text>}
 
                         </View>
                     
@@ -247,7 +260,7 @@ class Signup1 extends Component {
 
                     </View>
                     <View style={{flex:0.2,display:"flex",flexDirection:"row",justifyContent:"space-evenly",}}>
-                        {this.state.active_step<3? this.steps.map((item,index)=>{
+                        {this.state.active_step<6? this.steps.map((item,index)=>{
                             return ( <View key={index}>
                                 <Button onPress={()=>this.setState({active_step:index})}
                                  style={{width:40,height:40,textAlign:"center",borderRadius:100,backgroundColor:this.state.active_step==index?"#313145":"#dee1ed"}}>

@@ -311,7 +311,7 @@ class Profile extends React.Component {
                                                     this.setState({ studentDetail: clas })
                                                 }}>{item.first_name}</TextInput>
                                         </View>
-                                        {/* <View style={{ width: '50%', marginVertical: 5, flexDirection: 'column', alignItems: "center" }}>
+                                         <View style={{ width: '50%', marginVertical: 5, flexDirection: 'column', alignItems: "center" }}>
                                             <Text style={{ width: '100%', fontWeight: 'bold' }}>{i18n.t('Last Name')}</Text>
                                             <TextInput style={{ padding: 10, height: 40, width: '100%', borderWidth: 1, borderRadius: 10 }}
                                                 onChangeText={(e) => {
@@ -319,7 +319,7 @@ class Profile extends React.Component {
                                                     clas.last_name = e
                                                     this.setState({ studentDetail: clas })
                                                 }}>{item.last_name}</TextInput>
-                                        </View> */}
+                                        </View> 
                                     </View>
 
 

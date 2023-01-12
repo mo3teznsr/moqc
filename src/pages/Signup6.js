@@ -32,7 +32,7 @@ let width = Dimensions.get('window').width
 let height = Dimensions.get('window').height
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
 import Sound from 'react-native-sound';
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
 
 class Signup6 extends Component {
     constructor(props) {

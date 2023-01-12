@@ -27,7 +27,8 @@ import { auto } from "async";
 import ImagePicker from "react-native-customized-image-picker";
 import API from "../api/";
 import { TextInput } from "react-native-gesture-handler";
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
+
 var FormData = require('form-data');
 let width = Dimensions.get('window').width
 let height = Dimensions.get('window').height

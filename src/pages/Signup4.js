@@ -18,7 +18,7 @@ import {
     Form,
     Footer,
     FooterTab,
-    Picker
+   
 } from "native-base";
 import { AsyncStorage } from 'react-native';
 import DropShadow from "react-native-drop-shadow";
@@ -31,7 +31,7 @@ var FormData = require('form-data');
 let width = Dimensions.get('window').width
 let height = Dimensions.get('window').height
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
 
 
 class Signup4 extends Component {

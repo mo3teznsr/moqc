@@ -23,7 +23,7 @@ import { AsyncStorage } from 'react-native';
 import DropShadow from "react-native-drop-shadow";
 import FooterBottom from "./Footer";
 import { auto } from "async";
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
 class Signup2 extends Component {
     constructor(props) {
         super(props);

@@ -33,7 +33,8 @@ import {
 import Toast from 'react-native-simple-toast';
 import i18n from '../i18n';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Social from '../../src1/pages/components/social';
+import Social from './components/social';
+
 const data = [
     {
         label: 'العربية',

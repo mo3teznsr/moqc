@@ -1,13 +1,12 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { View, TouchableOpacity, Image, ActivityIndicator, Text } from 'react-native';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+//import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import 'react-native-reanimated';
 
 import '../i18n';
 
@@ -71,9 +70,10 @@ import ApprovedStudent from '../pages/approvedStudent';
 import Classes from '../pages/Classes';
 import register from '../pages/register';
 import SideMenu from '../pages/components/sideMenu';
+import Web from '../pages/web';
 
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
+//const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 
@@ -680,7 +680,7 @@ function StudentsTeacherStack({ navigation }) {
 }
 
 function HomeTabs(props) {
-  const [token, setToken] = useState()
+  const [token, setToken] = React.useState()
 
   const checkUserSignedIn = async () => {
 
@@ -688,7 +688,7 @@ function HomeTabs(props) {
     await setToken(token)
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     checkUserSignedIn();
 
   }, [token])
@@ -783,14 +783,13 @@ function HomeTabs(props) {
 }
 
 function HomeStudentTabs(props) {
-  const [token, setToken] = useState()
+  const [token, setToken] = React.useState()
 
   const checkUserSignedIn = async () => {
     let token = await AsyncStorage.getItem("@moqc:token")
     setToken(token)
   }
-
-  useEffect(() => {
+  React.useEffect(() => {
     checkUserSignedIn();
   }, [token])
 
@@ -926,6 +925,15 @@ function Navigation(props) {
           component={MediaStack}
 
         />
+
+<Stack.Screen
+          name="Web"
+          options={{headerShown:false, gestureEnabled: true, drawerLabel: 'MOQC' }}
+          
+          component={Web}
+
+        />
+
         {/* <Stack.Screen
           name="Team"
           options={{ gestureEnabled: true, drawerLabel: 'Team', headerShown: false }}

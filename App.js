@@ -1,12 +1,10 @@
 
 import * as React from 'react';
-import { View, ImageBackground, LogBox, Text,Platform, KeyboardAvoidingView, SafeAreaView,   } from 'react-native';
-LogBox.ignoreAllLogs();//Ignore all log notifications
+import {  ImageBackground, SafeAreaView,   } from 'react-native';
+//LogBox.ignoreAllLogs();//Ignore all log notifications
 import Navigation from './src/navigation/Navigation'
-import 'react-native-gesture-handler';
-import { ShowMenu } from './src/store';
-import SideMenu from './src/pages/components/sideMenu';
 
+import 'react-native-reanimated';
 
 function App() {
 

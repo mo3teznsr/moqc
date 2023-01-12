@@ -19,7 +19,6 @@ const [countries,setCountries]=useState([])
 const [showDob,setShowDob]=useState(false)
 const [showJob,setShowJob]=useState(false)
 const [showLocation,setShowLocation]=useState(false)
-const [dob,setDob]=useState(Date())
 const [qualifications,setQuailifications]=useState([])
 const [jobs,setJobs]=useState([])
 const [error,setError]=useState(false)
@@ -29,6 +28,8 @@ const [showYear,setShowYears]=useState(false)
 const [days,setDays]=useState([])
 const [months,setMonths]=useState([])
 const [years,setYears]=useState([])
+const [dob,setDOB]=useState({day:"",month:"",year:""})
+const [showError,setShowError]=useState(false)
 useEffect(()=>{
   var list=[]
 for(let i=1;i<=31;i++)
@@ -57,9 +58,9 @@ const {t, i18n} = props;
       <Text style={{textAlign:"center",marginVertical:15,fontSize:25,fontWeight:"600"}}>{t('Personal Information')}</Text>
           
           
-        <Text style={styles.label}>{t("Your Full name")}</Text>
+        <Text style={styles.label}>{t("Your Full name")}*</Text>
       <TextInput style={styles.input} value={props.data.first_name} onChangeText={(val)=>props.update({first_name:val})} />
-      
+      {!props.data.first_name?<Text style={styles.error}>{t("Name is required")}</Text>:null}
       <Text style={styles.label}>{t("Nationality")}</Text>
      
 
@@ -77,7 +78,7 @@ const {t, i18n} = props;
         console.log(item)}}
       render={i18n.language=='ar'?'country_name_ar': 'country_name'}
       close={()=>setShowCountries(false)} />
-
+     { !props.data.nationality?<Text style={styles.error}>{t("Nationality is required")}</Text>:null}
       <View >
       
       <Text style={styles.label}>{ t("Date of Birth")}</Text>
@@ -93,10 +94,12 @@ const {t, i18n} = props;
       open={()=>setShowDays(true)}
       onSelect={(item)=>{
         setShowDays(false)
+        setDOB({...dob,day:item})
         props.update({day:item,dob:props.data.year+'-'+props.data.month+'-'+item})
         console.log(item)}}
       render={ 'name'}
-      close={()=>setShowCountries(false)} />
+      close={()=>setShowDays(false)} />
+      
         </View>
         <View style={{flex:1}}>
           <Text style={styles.label}>{i18n.t('Month')} </Text>
@@ -109,11 +112,11 @@ const {t, i18n} = props;
       open={()=>setShowMonth(true)}
       onSelect={(item)=>{
         setShowMonth(false)
-        
+        setDOB({...dob,month:item})
         props.update({months:item,dob:props.data.year+'-'+item+'-'+props.data.day})
         console.log(item)}}
       render={ 'name'}
-      close={()=>setShowCountries(false)} />
+      close={()=>setShowMonth(false)} />
         </View>
         <View style={{flex:1}}>
           <Text style={styles.label}>{i18n.t('Year')} </Text>
@@ -126,13 +129,14 @@ const {t, i18n} = props;
       open={()=>setShowYears(true)}
       onSelect={(item)=>{
         setShowYears(false)
-        
+        setDOB({...dob,year:item})
         props.update({year:item,dob:item+'-'+props.data.month+'-'+props.data.day})
         console.log(item)}}
       render={ 'name'}
-      close={()=>setShowCountries(false)} />
+      close={()=>setShowYears(false)} />
         </View>
       </View>
+     {!dob.day||!dob.month||!dob.year? <Text style={styles.error}>{t("Date of Birth is required")}</Text>:null}
       </View>
       {/* <Pressable onPress={()=>setShowDob(true)}>
         <View style={{...styles.input,flexDirection:"row",justifyContent:"space-between"}}>
@@ -153,7 +157,7 @@ const {t, i18n} = props;
                                         console.log(date,moment(date).format("YYYY-MM-DD"))}}
                                 />:<Text></Text>} */}
 
-      <Text style={styles.label}>{t('Your qualification')}</Text>
+      {/* <Text style={styles.label}>{t('Your qualification')}</Text>
       <Select
       list={props.data.qualifications}
       title={t('Your qualification')}
@@ -168,10 +172,11 @@ const {t, i18n} = props;
         console.log(item)}}
       render={i18n.language=='ar'?'name_ar': 'name_en'}
       close={()=>setShowQualification(false)} />
+      { !props.data.qualification_id?<Text style={styles.error}>{t("Qualification is required")}</Text>:null}
 
       <Text style={styles.label}>{t('Contact Number')}</Text>
       <TextInput style={styles.input}  value={props.data.contact_number} onChangeText={(val)=>props.update({contact_number:val})} keyboardType="phone-pad" />
-
+     { !props.data.contact_number?<Text style={styles.error}>{t("Contact number is required")}</Text>:null}
 
       <Text style={styles.label}>{t('Counrty of Residance')}</Text>
       <Select
@@ -188,10 +193,11 @@ const {t, i18n} = props;
         console.log(item)}}
       render={i18n.language=='ar'?'country_name_ar': 'country_name'}
       close={()=>setShowResidance(false)} />
+      {!props.data.country? <Text style={styles.error}>{t("Country of residance is required")}</Text>:null}
 
       <Text style={styles.label}>{t('Email')}</Text>
       <TextInput value={props.data.email} style={styles.input} onChangeText={(val)=>props.update({email:val})} />
-
+      {!props.data.email?<Text style={styles.error}>{t("Email is required")}</Text>:null}
       <Text style={styles.label}>{t('Your Job')}</Text>
       <Select
       list={props.data.jobs}
@@ -207,7 +213,8 @@ const {t, i18n} = props;
         console.log(item)}}
       render={i18n.language=='ar'?'name_ar': 'name_en'}
       close={()=>setShowJob(false)} />
-
+       {!props.data.job_id?<Text style={styles.error}>{t("Job is required")}</Text>:null} */}
+{/* 
 <Text style={styles.label}>{t('Where did you find us?')}</Text>
       <Select
       list={props.data.locations}
@@ -222,11 +229,12 @@ const {t, i18n} = props;
         console.log(item)}}
       render={i18n.language=='ar'?'name_ar': 'name_en'}
       close={()=>setShowLocation(false)} />
+      {!props.data.location_id? <Text style={styles.error}>{t("Where you find us is required")}</Text>:null}
 
       <Text style={styles.label}>{t("Memorized Juz'")}</Text>
       <TextInput value={props.data.memorized.toString()} keyboardType="number-pad"
       onChangeText={(val)=>props.update({memorized:val})} style={styles.input} />
-
+{!props.data.memorized? <Text style={styles.error}>{t("Memorized Juz is required")}</Text>:null}
 <Text style={styles.label}>{t('Course')}</Text>
       <Select
       list={props.data.courses}
@@ -241,15 +249,18 @@ const {t, i18n} = props;
         console.log(item)}}
       render={i18n.language=='ar'?'course_name_ar': 'course_name_en'}
       close={()=>setShowCourse(false)} />
-
+      {!props.data.course_id? <Text style={styles.error}>{t("Course is required")}</Text>:null}
      {error? <View style={{padding:18,borderRadius:15,backgroundColor:"#eb445a"}}>
+        <Text style={{color:"#fff",fontSize:18,fontWeight:"600"}}>{t('Please fill all records')}</Text>
+      </View>:<View></View>} */}
+       {error? <View style={{padding:18,borderRadius:15,backgroundColor:"#eb445a"}}>
         <Text style={{color:"#fff",fontSize:18,fontWeight:"600"}}>{t('Please fill all records')}</Text>
       </View>:<View></View>}
 
 <View style={{flex:1,flexDirection:"row",justifyContent:"center",alignContent:"center",marginTop:5,marginBottom:5}}>
                             <Pressable onPress={() => {
                             //  console.log(props.data.first_name,props.data.nationality,props.data.dob,props.data.qualification_id,props.data.contact_number,props.data.country,props.data.email,props.data.job_id,props.data.location_id,props.data.course_id)
-                              if(props.data.first_name&&props.data.nationality&&props.data.dob&&props.data.qualification_id&&props.data.contact_number&&props.data.country&&props.data.email&&props.data.job_id&&props.data.location_id&&props.data.course_id)
+                              if(props.data.first_name&&dob.day&&dob.month&&dob.year)
                               {
                                 
                                 setError(false)
@@ -261,7 +272,7 @@ const {t, i18n} = props;
                               }
 
                               
-                            }} style={{width:120,height:50,borderRadius:30,justifyContent:"center",alignContent:"center",backgroundColor:"#31314f"}}>
+                            }} style={{width:180,height:50,borderRadius:10,justifyContent:"center",alignContent:"center",backgroundColor:"#31314f"}}>
                                 <Text style={{textAlign:"center",color:"#fff",fontWeight:"500"}}>
                                     {t('Next')} 
                                 </Text>
@@ -275,6 +286,7 @@ const {t, i18n} = props;
 export default  withTranslation()(Step2);
 
 const styles=StyleSheet.create({
-    label:{marginHorizontal:10,fontSize:18},
+    label:{marginHorizontal:10,fontSize:22,fontWeight:'500'},
+    error:{marginHorizontal:10,fontSize:14,color:"#e41e3f",marginBottom:10},
     input:{borderBottomWidth:1,paddingHorizontal:15,marginBottom:10,color:"#000"}
 })

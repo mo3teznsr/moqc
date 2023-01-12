@@ -56,15 +56,17 @@ class Home extends React.Component {
             showCount: false,
             quranList: [],
             show_spinner: true,
-            countDownSec: 5
+            countDownSec: 0,
+            newsPoss:0
             // arabicDate: new Intl.DateTimeFormat('fr-FR-u-ca-islamicc', { day: 'numeric', month: 'long', weekday: 'long', year: 'numeric' }).format(Date.now())
         };
-       
+        this.getAdhanTime()
         this.getCityName();
         this.getAllNews();
         // this.checkAccess();
         this.checkLastLogin();
         this.getPodcast()
+        
     }
 
     componentDidMount() {
@@ -130,19 +132,20 @@ class Home extends React.Component {
             })
             .catch(error => {
                 const { code, message } = error;
-                console.warn(code, message);
+             //   console.warn(code, message);
             })
     }
     getCityName = async () => {
-        axios.get('https://ip-api.com/json')
+        axios.get('http://ip-api.com/json')
             .then(response => {
+             //   console.log(response)
                 AsyncStorage.setItem('@moqc:location', JSON.stringify(response.data.city));
                 this.setState({
                     city: response.data.city,
                 })
             })
             .catch(error => {
-                console.log(error);
+              //  console.log(error);
             });
     }
 
@@ -181,7 +184,7 @@ class Home extends React.Component {
 
             })
             .catch(err => {
-                console.log(err)
+            //    console.log(err)
                 alert(err)
             });
     }
@@ -201,10 +204,11 @@ class Home extends React.Component {
             formatDate = apiDate;
         }
         var ourDate = formatDate + "-" + formatMonth + "-" + apiYear;
-        console.log(ourDate)
+       // console.log(ourDate)
         var getUrl = 'https://api.aladhan.com/v1/calendar?latitude=' + this.state.lat + '&longitude=' + this.state.lng + '&method=8&month=' + apiMonth + '&year=' + apiYear;
         axios.get(getUrl)
             .then(response => {
+             //   console.log(response);
                 var apiData = response.data.data;
                 for (var i = 0; i < response.data.data.length; i++) {
 
@@ -250,7 +254,7 @@ class Home extends React.Component {
                             nextPrayer = "Isha"
 
                         }
-                        var stime = new Date().toLocaleTimeString();
+                        var stime = new Date();
                         var startTime = moment(stime, "HH:mm:ss a");
                         var endTime = moment(comp, "HH:mm");
                         var duration = moment.duration(endTime.diff(startTime));
@@ -259,7 +263,7 @@ class Home extends React.Component {
                         var result = endTime.diff(startTime, 'minutes');
                         var resultInSec = result * 60;
                         resultInSec = Math.abs(resultInSec)
-
+                        console.log("result",result)
                         this.setState({
                             todayData: apiData[i],
                             fajr,
@@ -278,10 +282,16 @@ class Home extends React.Component {
 
             })
             .catch(error => {
-                console.log(error);
+              //  console.log(error);
             });
 
 
+    }
+    scrollView
+    scrollListToStart(contentWidth, contentHeight) {
+        if (i18n.isRTL) {
+            this.scrollView.scrollTo({x: contentWidth});
+        }
     }
     componentDidMount() {
         this.load_data();
@@ -350,21 +360,21 @@ class Home extends React.Component {
 
         var sound = new Sound(`https://staging.moqc.ae/${link}`, null, (error) => {
             if (error) {
-                console.log('failed to load the sound', error);
+             //   console.log('failed to load the sound', error);
                 return;
             }
             // when loaded successfully
-            console.log(sound);
+         //   console.log(sound);
         });
         sound.setVolume(1);
 
         setTimeout(() => {
             sound.play((success) => {
                 if (success) {
-                    console.log('successfully finished playing');
+                 //   console.log('successfully finished playing');
                     sound.release();
                 } else {
-                    console.log('playback failed due to audio decoding errors');
+                   // console.log('playback failed due to audio decoding errors');
                 }
             });
         }, 1000);
@@ -525,46 +535,51 @@ class Home extends React.Component {
                                 </ScrollView>
                             </View>
 
-                            <View style={{ margin: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                                <View >
-                                    <Text>
-                                        {i18n.t('Remaining Time for')}
-                                    </Text>
-                                    <Text style={{ marginBottom: 10, fontSize: 12, fontWeight: "bold" }}>
-                                        {i18n.t(this.state.nextPrayer)}
-
-                                    </Text>
-                                    {/* <Text>{d}</Text> */}
-                                    {this.state.countDownSec ?
-                                        <CountDown
-                                            until={this.state.countDownSec}
-                                            onFinish={() => console.log('finsh')}
-                                            onPress={() => console.log('hello')}
-                                            size={14}
-                                            digitStyle={{ backgroundColor: '#a18c63' }}
-                                            digitTxtStyle={{ color: '#fff' }}
-
-                                        />
-                                        : <Text></Text>}
-                                </View>
+                            <View style={{ margin: 25, flexDirection: "row", justifyContent: "space-between",alignItems:"center" }}>
+                               
 
                                 <View style={{ padding: 15, textAlign: 'center', backgroundColor: '#fff', borderRadius: 20, borderWidth: 1, borderColor: "#E85C5D" }}>
-                                    <Text>
+                                    <Text style={{textAlign:"center"}}>
                                         {i18n.t(this.getDay().toLocaleUpperCase())}
                                     </Text>
                                     <Text style={{ fontWeight: 'bold', textAlign: "center" }}>{new Date().getDate()}</Text>
                                     <Text style={{ color: '#E85C5D', textAlign: "center" }}>
                                         {i18n.t(this.getMonth().toLocaleUpperCase())}
                                     </Text>
-                                    <Text style={{ textAlign: "center" }}>{new Intl.DateTimeFormat('ar-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long' }).format(Date.now())}</Text>
-                                    <Text style={{ fontWeight: 'bold', textAlign: "center" }}>{new Intl.DateTimeFormat('ar-TN-u-ca-islamic', { year: 'numeric' }).format(Date.now())}</Text>
+                                    <Text style={{ textAlign: "center" }}>{new Intl.DateTimeFormat(i18n.language+'-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long' }).format(Date.now())}</Text>
+                                    <Text style={{ fontWeight: 'bold', textAlign: "center" }}>{new Intl.DateTimeFormat(i18n.language+'-TN-u-ca-islamic', { year: 'numeric' }).format(Date.now())}</Text>
 
                                 </View>
-
-
-                                <Text style={{ width: "30%", alignItems: 'baseline', top: 50, fontWeight: "bold", fontSize: 12 }}>
+                                <View style={{ flex:1, alignItems: 'baseline',paddingHorizontal:20 }}>
+                                <Text style={{  fontWeight: "bold", fontSize: 12 }}>
                                     <Image style={{ height: 20, width: 20 }} source={require("../assets/compass_b.png")} />{i18n.t(this.state.city.toLocaleUpperCase())} - {new Date().getFullYear()}
                                 </Text>
+                                <View style={{alignItems:"flex-start"}}>
+                                    <Text style={{ marginVertical: 10, fontSize: 12, fontWeight: "bold"}}>
+                                        {i18n.t('Remaining Time for')}  {i18n.t(this.state.nextPrayer)}
+                                    </Text>
+                                    {/* <Text style={{ marginBottom: 10, fontSize: 12, fontWeight: "bold" }}>
+                                        {i18n.t(this.state.nextPrayer)}
+
+                                    </Text> */}
+                                    {/* <Text>{d}</Text> */}
+                                    {this.state.countDownSec ?
+                                        <CountDown
+                                            until={this.state.countDownSec}
+                                            onFinish={() => console.log('finsh')}
+                                            onPress={() => console.log('hello')}
+                                            size={16}
+                                           timeLabelStyle={{color:"#000",fontSize:15}}
+                                            timeLabels={ {d: i18n.t("Day"), h: i18n.t("Hour"), m:i18n.t("Minute"), s: i18n.t("Second")} }
+                                            digitStyle={{ backgroundColor: '#a18c63' }}
+                                            digitTxtStyle={{ color: '#fff' }}
+
+                                        />
+                                        : <Text></Text>}
+                                </View>
+                                </View>
+
+                                
 
 
 
@@ -596,15 +611,31 @@ class Home extends React.Component {
                                     <Text style={{ color: '#ffff', fontWeight: 'bold' }}>{i18n.t('Read More')}</Text>
                                 </TouchableOpacity>
                             </View>
+                          {this.state.newsPoss?  <Button style={{width:40,height:40,borderRadius:40,position:"absolute",top:"50%",zIndex:10,backgroundColor:"#b2b1b6"}} onPress={()=>{
+                                       // console.log(this.scrollView)
+                                       this.scrollView.scrollTo({x:this.state.newsPoss-200})
+                                    }}>
+                                         <Icon style={{ fontSize: 14,color:"#000" }} type="AntDesign" name={i18n.language=='ar'?"right":"left"} />
+                                    </Button>:<Text></Text>}
+                                     <Button style={{width:40,height:40,borderRadius:40,position:"absolute",top:"50%",end:0,zIndex:10,backgroundColor:"#b2b1b6"}} onPress={()=>{
+                                       // console.log(this.scrollView)
+                                       this.scrollView.scrollTo({x:this.state.newsPoss+200})
+                                    }}>
+                                         <Icon style={{ fontSize: 14,color:"#000" }} type="AntDesign" name={i18n.language=='ar'?"left":"right"} />
+                                    </Button>
                             {this.state.show_spinner ? <ActivityIndicator size="large" /> :
-                                <ScrollView horizontal={true}>
+                                <ScrollView onScroll={(event)=>{
+                                   this.setState({newsPoss: event.nativeEvent.contentOffset.x})
+                                   console.log(event.nativeEvent.contentOffset.x)
+                                }} showsHorizontalScrollIndicator={true} ref={ref=>this.scrollView=ref}  horizontal={true}>
+                                  
                                     {
                                         this.state.news?.map((n,index) => {
                                             return <TouchableOpacity key={index} elevation={5} onPress={() => this.props.navigation.navigate("NewsDetails", { id: n.id })}
                                                 style={{
                                                     elevation: 10,
                                                     borderWidth: 1,
-
+                                                    
                                                     borderColor: '#C4C6DF',
                                                     borderRadius: 30,
                                                     backgroundColor: "white",
@@ -626,7 +657,7 @@ class Home extends React.Component {
                                                         }} />
                                                 </View>
                                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
-                                                    <Text numberOfLines={1} style={{ width: 160, textOverflow: "eclipse" }}>
+                                                    <Text numberOfLines={1} style={{ width: 160, overflow:"hidden" }}>
                                                         {i18n.language=='en'? n.title_english:n.title_arabic}
                                                     </Text>
                                                 </View>

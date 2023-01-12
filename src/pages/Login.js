@@ -27,7 +27,8 @@ import API from "../api/";
 import Axios from 'axios'
 import i18n from "../i18n";
 import RNRestart from 'react-native-restart';
-import Social from "../../src1/pages/components/social";
+import Social from "./components/social";
+
 
 
 
@@ -178,7 +179,7 @@ class Login extends Component {
                     <View
                         style={{
                             backgroundColor: '#31314f',
-                            flex: 0.1,
+                            flex: .8,
                         }}
                     >
                         <View
@@ -204,18 +205,18 @@ class Login extends Component {
                     <View
                         padder
                         style={{
-                            flex: 14,
-                            marginTop: 120
+                            flex: 4,
+                            marginTop: 10
                         }}>
                         <View style={{
-                            flex: 2,
+                            flex: 1,
                             marginTop: 20
 
                         }}>
                         </View>
 
                         <Form style={{
-                            flex: 10,
+                            flex: 2,
 
                         }}>
                             <DropShadow
@@ -287,18 +288,54 @@ class Login extends Component {
                                             onChangeText={(password) => this.setState({ password })}
                                             placeholder={i18n.t("Password")} />
                                     </Item>
+                                    <View style={{justifyContent:"center",alignItems:"center"}}>
+<TouchableOpacity
+                                onPress={(e) => this.checkLogin()}
+                            >
+                                <View
+                                    style={{
+                                        elevation: 1,
+
+                                        borderColor: "#fff",
+                                        borderRadius: 30,
+                                        backgroundColor: "white",
+                                        padding: 1,
+                                        borderBottomColor: "black",
+                                        
+                                        marginTop: 5,
+                                        marginBottom: 0,
+                                        width: 150,
+                                        padding: 10,
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+
+
+                                    <Text style={{ fontWeight: "bold" }}>{i18n.t('SIGN IN')}
+                                        <Icon style={{ fontSize: 14 }} type="AntDesign" name={i18n.language=='ar'?"left":"right"} /></Text>
+
+                                </View>
+
+
+
+                            </TouchableOpacity>
+</View>
 
                                 </View>
 
 
                             </DropShadow>
+                            
                         </Form>
                         <View
                             style={{
                                 flex: 1,
                                 jusifyContent: 'center',
                                 alignItems: "center",
-                                marginTop: 45,
+                                marginTop: 5,
                                 fontWeight: "bold",
                             }}>
                             <Text>{i18n.t('Dont have an account?')} <Text></Text>
@@ -312,11 +349,11 @@ class Login extends Component {
                             </Text>
 
                         </View>
-                        <View
+                        {/* <View
                             style={{
-                                marginTop: 15,
-                                marginBottom: 45,
-                                flex: 2,
+                                marginTop: 5,
+                                marginBottom: 5,
+                                flex: 4,
                                 justifyContent: "space-evenly",
                                 alignItems: "center",
                                 flexDirection: "row",
@@ -373,7 +410,7 @@ class Login extends Component {
 
                             </TouchableOpacity>
 
-                        </View>
+                        </View> */}
 
 
 
