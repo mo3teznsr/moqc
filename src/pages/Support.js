@@ -193,7 +193,7 @@ class Support extends React.Component {
                                                     
                                                             <View style={{  paddingHorizontal:3}}>
                                                                 <View style={{ flexDirection: "row" }}>
-                                                                    <Text style={{ fontWeight: "bold" }} numberOfLines={1} ellipsizeMode='tail'> {m.first_name}</Text>
+                                                                    <Text style={{ fontWeight: "bold" }} numberOfLines={1} ellipsizeMode='tail'> {m.first_name}  {m.last_name}</Text>
                                                                 </View>
                                                                 <View style={{ flexDirection: "row" }}>
                                                                     <Text style={{ fontWeight: "bold" }} numberOfLines={1} ellipsizeMode='tail'> {m.gender==1?i18n.t("Male"):i18n.t("Female")}</Text>
@@ -214,7 +214,7 @@ class Support extends React.Component {
                         </Content>}
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={{ padding: 5 }}>
-                            Showing {this.state.from}-{this.state.to}
+                            {t("Showing")} {this.state.from}-{this.state.to}
                         </Text>
                         <View style={{ flexDirection: "row", borderWidth: 1, borderRadius: 8, height: 30 }}>
                             <TouchableOpacity disabled={this.state.page <= 1} onPress={() => { this.setState({ page: this.state.page - 1 }); this.getStudents() }}>

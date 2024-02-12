@@ -71,6 +71,7 @@ import Classes from '../pages/Classes';
 import register from '../pages/register';
 import SideMenu from '../pages/components/sideMenu';
 import Web from '../pages/web';
+import ExamResult from '../pages/ExamResult';
 
 const Stack = createStackNavigator();
 //const Drawer = createDrawerNavigator();
@@ -528,6 +529,14 @@ function TeacherStack({ navigation }) {
           headerShown: false
         }}
       />
+       <Stack.Screen
+        name="CSApprovedStudents"
+        component={CSApprovedStudents}
+        options={{
+          title: 'C.S', //Set Header Title
+          headerShown: false
+        }}
+      />
             <Stack.Screen
         name="ManageCourse"
         component={Classes}
@@ -696,7 +705,9 @@ function HomeTabs(props) {
   return (<View style={{flex:1}}>
     <SideMenu/>
     <Tab.Navigator initialRouteName='Home'
+    keyboardHidesTabBar={true}
       tabBarOptions={{
+        keyboardHidesTabBar: true,
         showLabel: false,
         style: {
           backgroundColor: '#fff',
@@ -719,7 +730,7 @@ function HomeTabs(props) {
           )
         }} />
 
-      <Tab.Screen name="Media" component={MediaStack}
+      {/* <Tab.Screen name="Media" component={MediaStack}
         options={{
           tabBarColor: '#579976',
           tabBarIcon: ({ focused, color, size }) => (
@@ -732,7 +743,7 @@ function HomeTabs(props) {
             </View>
             // <MaterialCommunityIcons name="view-dashboard" color="#579976" size={40} />
           )
-        }} />
+        }} /> */}
       <Tab.Screen name="Home" component={HomeStack}
         options={{
           tabBarColor: '#579976',
@@ -753,8 +764,8 @@ function HomeTabs(props) {
           tabBarColor: '#579976',
           tabBarIcon: ({ focused, color, size }) => (
             <View style={{ justifyContent: "center", alignItems: 'center' }}>
-              {focused ? <Image source={require('../assets/profile_a.png')}
-                style={{ marginTop:-20, height: 50, width:50, resizeMode: 'contain' }} /> : <Image source={require('../assets/profile_f.png')}
+              {focused ? <Image source={require('../assets/user.png')}
+                style={{ marginTop:-20, height: 50, width:50, resizeMode: 'contain' }} /> : <Image source={require('../assets/user.png')}
                   style={{ height: 30, width: 30, resizeMode: 'contain' }} />}
               <Text style={{ fontSize: 10 }}>{i18n.t('Profile')}</Text>
             </View>
@@ -762,7 +773,7 @@ function HomeTabs(props) {
           )
         }} />
 
-      <Tab.Screen name="Radio" component={RadioStack}
+      {/* <Tab.Screen name="Radio" component={RadioStack}
         options={{
           tabBarColor: '#579976',
           tabBarIcon: ({ focused, color, size }) => (
@@ -775,7 +786,7 @@ function HomeTabs(props) {
             </View>
             // <MaterialCommunityIcons name="view-dashboard" color="#579976" size={40} />
           )
-        }} />
+        }} /> */}
     </Tab.Navigator>
 
     </View>
@@ -798,6 +809,7 @@ function HomeStudentTabs(props) {
   <SideMenu/>
     <Tab.Navigator initialRouteName='Home'
       tabBarOptions={{
+        keyboardHidesTabBar: true,
         showLabel: false,
         style: {
 
@@ -821,7 +833,7 @@ function HomeStudentTabs(props) {
             // <MaterialCommunityIcons name="view-dashboard" color="#579976" size={40} />
           )
         }} />
-      <Tab.Screen name="Social Media" component={MediaStack}
+      {/* <Tab.Screen name="Social Media" component={MediaStack}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <View style={{ justifyContent: "center", alignItems: 'center' }}>
@@ -833,7 +845,7 @@ function HomeStudentTabs(props) {
             </View>
             // <MaterialCommunityIcons name="view-dashboard" color="#579976" size={40} />
           )
-        }} />
+        }} /> */}
       <Tab.Screen name="HomeStudent" component={HomeStack}
         options={{
           tabBarLabel: 'Home',
@@ -861,7 +873,7 @@ function HomeStudentTabs(props) {
             </View>
           ),
         }} /> */}
-      <Tab.Screen name="Compass" component={RadioStack}
+      {/* <Tab.Screen name="Compass" component={RadioStack}
         options={{
           tabBarLabel: 'Compass',
           tabBarIcon: ({ focused, color, size }) => (
@@ -874,7 +886,7 @@ function HomeStudentTabs(props) {
             </View>
             // <MaterialCommunityIcons name="view-dashboard" color="#579976" size={40} />
           ),
-        }} />
+        }} /> */}
     </Tab.Navigator>
     </View>
   );
@@ -973,6 +985,11 @@ function Navigation(props) {
           name="CreateExam"
           options={{ gestureEnabled: true, drawerLabel: 'Teacher', headerShown: false }}
           component={CreateExam}
+        />
+        <Stack.Screen
+          name="ExamResult"
+          options={{ gestureEnabled: true, drawerLabel: 'Exam Result', headerShown: false }}
+          component={ExamResult}
         />
         <Stack.Screen
           name="ExamReport"

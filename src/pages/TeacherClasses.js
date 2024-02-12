@@ -26,6 +26,7 @@ import HeaderTop from "./Header";
 import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 class TeacherClasses extends React.Component {
 
@@ -65,7 +66,7 @@ class TeacherClasses extends React.Component {
     getClasses = async () => {
         this.setState({show_spinner:true})
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get("https://staging.moqc.ae/api/teacher_classes",
+        const response = await axios.get("https://staging.moqc.ae/api/teacher_classes",
             {
                 headers: { "token": token }
             });
@@ -82,7 +83,7 @@ class TeacherClasses extends React.Component {
         body.append("class_name", this.state.name_en)
         body.append("name_ar", this.state.name_ar)
         body.append("class_teacher", this.state.teacher)
-        const response = await Axios.post(`https://staging.moqc.ae/api/classes/create`, body,
+        const response = await axios.post(`https://staging.moqc.ae/api/classes/create`, body,
             {
                 headers: { "token": token }
             });
@@ -100,7 +101,7 @@ class TeacherClasses extends React.Component {
         body.append("class_name", this.state.updatename_en)
         body.append("name_ar", this.state.updatename_ar)
         body.append("class_teacher", this.state.updateteacher)
-        const response = await Axios.post(`https://staging.moqc.ae/classes/update`, body,
+        const response = await axios.post(`https://staging.moqc.ae/classes/update`, body,
         {
             headers: { "token": token }
         });

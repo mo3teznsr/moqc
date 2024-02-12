@@ -195,7 +195,7 @@ class CSApprovedStudents extends React.Component {
                                                                 }} /> */}
                                                             <View style={{ }}>
                                                                 <View style={{ flexDirection: "row" }}>
-                                                                    <Text style={{ fontWeight: "bold" }} numberOfLines={1} ellipsizeMode='tail'> {m.first_name}</Text>
+                                                                    <Text style={{ fontWeight: "bold" }} numberOfLines={1} ellipsizeMode='tail'> {m.first_name} {m.last_name}</Text>
                                                                 </View>
                                                                 <View style={{ flexDirection: "row" }}>
                                                                     <Text style={{ fontWeight: "bold" }} numberOfLines={1} ellipsizeMode='tail'> {m.gender==1?i18n.t("Male"):i18n.t("Female")}</Text>
@@ -216,17 +216,17 @@ class CSApprovedStudents extends React.Component {
                         </Content>}
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={{ padding: 5 }}>
-                            Showing {this.state.from}-{this.state.to}
+                            {t("Showing")} {this.state.from}-{this.state.to}
                         </Text>
                         <View style={{ flexDirection: "row", borderWidth: 1, borderRadius: 8, height: 30 }}>
                             <TouchableOpacity disabled={this.state.page <= 1} onPress={() => { this.setState({ page: this.state.page - 1 }); this.getStudents() }}>
-                                <Text style={{ padding: 5 }}>Previous</Text>
+                                <Text style={{ padding: 5 }}>{i18n.t("Previous")}</Text>
                             </TouchableOpacity>
                             <Text style={{ width: 20, textAlign: "center", backgroundColor: "#CFDED5", padding: 5 }}>
                                 {this.state.page}
                             </Text>
                             <TouchableOpacity disabled={this.state.page >= this.state.pages} style={{ padding: 5 }} onPress={() => { this.setState({ page: this.state.page + 1 }); this.getStudents() }}>
-                                <Text>Next</Text>
+                                <Text>{t("Next")}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

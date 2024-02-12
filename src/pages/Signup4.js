@@ -30,7 +30,7 @@ import { TextInput } from "react-native-gesture-handler";
 var FormData = require('form-data');
 let width = Dimensions.get('window').width
 let height = Dimensions.get('window').height
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
 import Social from "./components/social";
 
 

@@ -193,11 +193,11 @@ class Signup1 extends Component {
     render() {
         const {t, i18n} = this.props;
         console.log(this.state.gender)
-        return (
+        return (<Content>
             <Container
                 style={{
                 display: 'flex',
-                flex: 10,
+               
                 direction: this.state.rtl
                     ? 'rtl'
                     : 'ltr'
@@ -206,7 +206,7 @@ class Signup1 extends Component {
                     style={{
                     width: '100%',
                     height: '100%',
-                    flex: 10
+                    flex: 1
                 }}>
                     <Header
                         style={{
@@ -223,21 +223,24 @@ class Signup1 extends Component {
                     </Header>
                     <View
                     style={{
-                        backgroundColor: '#31314f',
-                        flex:0.1,
+                        backgroundColor: '#fff',
+                        position:"relative",
+                      
+                      
                     }}
                     >
+                       
+                        
                          <View
                             style={{
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center"
+                            alignItems: "center",
+                            top:-30
                         }}>
                             <Image
                                 style={{
-                                height: 150,
-                                width: 150,
-                                marginTop: 100
+                                height: 80,
+                                width: 80,
+                                
                             }}
                                 source={require('../assets/round.png')}/>
                                 
@@ -248,7 +251,7 @@ class Signup1 extends Component {
                     </View>
 
                 
-                <Content style={{marginTop:130,paddingHorizontal:10}}>
+                
                     <View style={{
                         height:2,
                         backgroundColor:"lightgrey",
@@ -259,7 +262,7 @@ class Signup1 extends Component {
                     }}>
 
                     </View>
-                    <View style={{flex:0.2,display:"flex",flexDirection:"row",justifyContent:"space-evenly",}}>
+                    <View style={{display:"flex",flexDirection:"row",justifyContent:"space-evenly",}}>
                         {this.state.active_step<6? this.steps.map((item,index)=>{
                             return ( <View key={index}>
                                 <Button onPress={()=>this.setState({active_step:index})}
@@ -310,7 +313,15 @@ class Signup1 extends Component {
                         </View> */}
                         
                     </View>
-               {this.step(this.state.active_step)}
+                    <View style={{flex:1,paddingHorizontal:20}}>
+                    {this.step(this.state.active_step)}
+                  
+                    </View>
+                    <View>
+                    <Social/>
+                    </View>
+                 
+             
                         {/* <View style={{flex:1,flexDirection:"row",justifyContent:"center",alignContent:"center",marginTop:5,marginBottom:5}}>
                             <Button onPress={() => this.setState({active_step:1})} style={{width:120,borderRadius:30,justifyContent:"center",alignContent:"center",backgroundColor:"#31314f"}}>
                                 <Text>
@@ -321,12 +332,13 @@ class Signup1 extends Component {
 
                         </View> */}
                
-                <Social/>
-                </Content>
+                
+               
                 </ImageBackground>
 
                 {/* <FooterBottom {...this.props}/> */}
             </Container>
+            </Content>
         );
     }
 }

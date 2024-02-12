@@ -29,6 +29,7 @@ import ActionButton from 'react-native-action-button';
 import RNFetchBlob from 'rn-fetch-blob'
 import i18n from '../i18n';
 import { AsyncStorage } from 'react-native';
+import axios from 'axios';
 
 
 class ELessons extends React.Component {
@@ -67,7 +68,7 @@ class ELessons extends React.Component {
     getLessons = async () => {
         this.setState({ show_spinner: true })
         var course_id = this.props.route.params.course_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/course_eleasons/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/course_eleasons/${course_id}`);
         if (response.status === 200) {
             this.setState({ show_spinner: false })
             this.setState({ lessons: response.data })
@@ -80,7 +81,7 @@ class ELessons extends React.Component {
         body.append("name_ar", this.state.name_ar)
         body.append("attachment", this.state.attachment)
         var course_id = this.props.route.params.course_id
-        const response = await Axios.post(`https://staging.moqc.ae/api/eleason_create/${course_id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/eleason_create/${course_id}`, body);
 
         if (response.status === 200) {
             this.setState({ createModal: false })
@@ -89,7 +90,7 @@ class ELessons extends React.Component {
     }
 
     async deleteLessons(id) {
-        const response = await Axios.delete(`https://staging.moqc.ae/api/eleason_delete/${id}`);
+        const response = await axios.delete(`https://staging.moqc.ae/api/eleason_delete/${id}`);
         if (response.status === 200) {
             this.getLessons()
         }
@@ -100,7 +101,7 @@ class ELessons extends React.Component {
         body.append("name_en", this.state.updatename_en)
         body.append("name_ar", this.state.updatename_ar)
         body.append("attachment", this.state.attachment)
-        const response = await Axios.post(`https://staging.moqc.ae/api/eleason_update/${this.state.updateLessonItem.id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/eleason_update/${this.state.updateLessonItem.id}`, body);
 
         if (response.status === 200) {
             this.setState({ updateModal: false })
@@ -276,7 +277,7 @@ class ELessons extends React.Component {
 
                         <Modal
                             animationType="slide"
-                            transparent={true}
+                            
                             visible={this.state.createModal}
                             statusBarTranslucent={true}
 
@@ -284,13 +285,14 @@ class ELessons extends React.Component {
                                 this.setState({ createModal: false });
                             }}
                         ><SafeAreaView style={{flex:1}}>
+                            
 
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
                                     <Text style={styles.heading}>{i18n.t('Upload E-Lessons')}</Text>
                                     <View style={{ marginVertical: 10 }}>
                                         <Text>{i18n.t('English Name')}</Text>
-                                        <TextInput style={{ padding: 10, height: 40, width: '100%', borderWidth: 1, borderRadius: 10 }}
+                                        <TextInput style={{ padding: 10, height: 40,  borderWidth: 1, borderRadius: 10 }}
                                             value={this.state.name_en}
                                             onChangeText={(e) => this.setState({ name_en: e })}></TextInput>
                                     </View>
@@ -300,17 +302,21 @@ class ELessons extends React.Component {
                                             value={this.state.name_ar}
                                             onChangeText={(e) => this.setState({ name_ar: e })}></TextInput>
                                     </View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                                    <View style={{ flexDirection: 'row', }}>
                                         <Pressable
                                             onPress={() => this.docPicker()}
                                         >
-                                            <Image style={{ height: 100, width: 100 }} source={require('../assets/upload.jpg')} />
+                                            <Image style={{ height: 24, width: 24 }} source={require('../assets/upload.jpg')} />
                                             <Text style={{ color: '#579976' }}> {'Click to upload'}</Text>
                                         </Pressable>
-                                        <Pressable style={{ position: 'absolute', right: 0, bottom: 10 }}>
-                                            <Button disabled={!this.state.name_en || !this.state.name_ar || !this.state.attachment} onPress={() => this.uploadAPICall()} style={{ backgroundColor: '#579976', width: '100%', padding: 20, color: '#579976' }}><Text style={{ fontWeight: 'bold', color: '#fff' }}>{i18n.t('Submit')}</Text></Button>
-                                        </Pressable>
+                                      
+                                            
+                                       
                                     </View>
+                                    <Button disabled={!this.state.name_en || !this.state.name_ar || !this.state.attachment} onPress={() => this.uploadAPICall()} style={{ backgroundColor: '#579976',width:"100%",  padding: 20, color: '#579976',justifyContent:"center" }}><Text style={{ fontWeight: 'bold', color: '#fff' }}>{i18n.t('Submit')}</Text></Button>
+                                    <Button style={{backgroundColor:"#fff",borderColor:"#579976",borderWidth:1,borderRadius:10,marginVertical:10,width:"100%",alignItems:"center",justifyContent:"center"}} onPress={()=>{this.setState({ createModal: false });}} >
+                                            <Text style={{textAlign:"center",}}>{i18n.t("cancel")}</Text>
+                                        </Button>
 
                                 </View>
                             </View></SafeAreaView>
@@ -353,13 +359,17 @@ class ELessons extends React.Component {
                                     </View>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                                         <Pressable onPress={() => this.docPicker()}>
-                                            <Image style={{ height: 100, width: 100 }} source={require('../assets/upload.jpg')} />
+                                            <Image style={{ height: 24, width: 24 }} source={require('../assets/upload.jpg')} />
                                             <Text style={{ color: '#579976' }}> {'Click to upload'}</Text>
                                         </Pressable>
-                                        <Pressable style={{ position: 'absolute', right: 0, bottom: 10 }}>
-                                            <Button onPress={() => this.updateLessons()} style={{ backgroundColor: '#579976', width: '100%', padding: 20, color: '#579976' }}><Text style={{ fontWeight: 'bold', color: '#fff' }}>{i18n.t('Submit')}</Text></Button>
-                                        </Pressable>
+                                       
                                     </View>
+                                   
+                                            <Button onPress={() => this.updateLessons()} style={{ backgroundColor: '#579976',width:"100%", padding: 20, color: '#579976',alignItems:"center",justifyContent:"center" }}><Text style={{ fontWeight: 'bold',textAlign:"center", color: '#fff' }}>{i18n.t('Submit')}</Text></Button>
+                                        <Button style={{backgroundColor:"#fff",borderColor:"#579976",borderWidth:1,borderRadius:10,marginVertical:10,width:"100%",alignItems:"center",justifyContent:"center"}} onPress={()=>{this.setState({ updateModal: false });}} >
+                                            <Text style={{textAlign:"center",}}>{i18n.t("cancel")}</Text>
+                                        </Button>
+                                        
                                 </View>
                             </View></SafeAreaView>
                         </Modal>
@@ -404,26 +414,17 @@ const styles = StyleSheet.create({
     },
     centeredView: {
         flex: 1,
-        justifyContent: "center",
+       
         alignItems: "center",
-        marginTop: 22,
-        backgroundColor: 'rgba(0,0,0,0.7)'
+      
+       
     },
     modalView: {
-        marginHorizontal: 10,
-        width: 350,
-        height: "50%",
+      
         backgroundColor: "white",
-        borderRadius: 20,
+       
         padding: 20,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
+        width:"100%"
     },
     button: {
         borderRadius: 20,

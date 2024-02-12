@@ -34,6 +34,7 @@ import { decode } from 'decode-html';
 import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 
 class newsDetails extends React.Component {
@@ -60,7 +61,7 @@ class newsDetails extends React.Component {
         this.setState({ showSpinner: true })
         var id = this.props.route.params.id
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/media/${id}`,
+        const response = await axios.get(`https://staging.moqc.ae/api/media/${id}`,
             {
                 headers: { "token": token }
             });

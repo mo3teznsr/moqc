@@ -10,6 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import WebView from "react-native-webview";
 import Axios from 'axios'
 import i18n from "../../i18n";
+import axios from "axios";
 const Tab = createBottomTabNavigator();
 
 export default class Radio extends Component {
@@ -32,7 +33,7 @@ componentDidMount()
   this.getConnectionInfo()
 }
   async getConnectionInfo() {
-    const response = await Axios.get(`https://staging.moqc.ae/api/equran_list`);
+    const response = await axios.get(`https://staging.moqc.ae/api/equran_list`);
     console.log(response)
     if (response.status === 200) {
       this.setState({ network: true })

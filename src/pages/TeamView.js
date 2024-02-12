@@ -32,6 +32,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 import i18n from '../i18n';
 import Toast from 'react-native-simple-toast';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 const data = [
     {
@@ -80,7 +81,7 @@ class TeamView extends React.Component {
         this.setState({ show_spinner: true })
         var team_id = this.props.route.params.team_id
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.post(`https://staging.moqc.ae/api/profile/${team_id}`, '',
+        const response = await axios.post(`https://staging.moqc.ae/api/profile/${team_id}`, '',
             {
                 headers: { "token": token }
             });
@@ -109,7 +110,7 @@ class TeamView extends React.Component {
         // body.append("dob", this.state.studentDetail.dob)
         body.append("passport_expiration", this.state.studentDetail.passport_expiration)
         body.append("emirates_id_expiration", this.state.studentDetail.emirates_expiration)
-        const response = await Axios.post(`https://staging.moqc.ae/api/editProfile/${team_id}`,
+        const response = await axios.post(`https://staging.moqc.ae/api/editProfile/${team_id}`,
             body,
             {
                 headers: { "token": token }
@@ -140,7 +141,7 @@ class TeamView extends React.Component {
             body.append('file', res[0])
             // body.append("attachment", this.state.attachment)
 
-            Axios.post(`https://staging.moqc.ae/api/profile_upload/${team_id}`, body,
+            axios.post(`https://staging.moqc.ae/api/profile_upload/${team_id}`, body,
                 { headers: { "token": token } }).then(res => {
                     Toast.showWithGravity('Update Successfull', Toast.SHORT, Toast.TOP);
                     this.getStudentProfile()
@@ -165,7 +166,7 @@ class TeamView extends React.Component {
         }))
         // body.append("attachment", this.state.attachment)
 
-        Axios.post(`https://staging.moqc.ae/api/profile_upload`, body)
+        axios.post(`https://staging.moqc.ae/api/profile_upload`, body)
 
     }
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="1.8">
+      <module name="android.moqc.react-native-video" target="17" />
+      <module name="moqc.app" target="17" />
+      <module name="moqc.react-native-async-storage_async-storage" target="17" />
+      <module name="moqc.react-native-audio" target="17" />
+      <module name="moqc.react-native-community_masked-view" target="17" />
+      <module name="moqc.react-native-community_slider" target="17" />
+      <module name="moqc.react-native-compass-heading" target="17" />
+      <module name="moqc.react-native-customized-image-picker" target="17" />
+      <module name="moqc.react-native-date-picker" target="17" />
+      <module name="moqc.react-native-document-picker" target="17" />
+      <module name="moqc.react-native-drop-shadow" target="17" />
+      <module name="moqc.react-native-exception-handler" target="17" />
+      <module name="moqc.react-native-fs" target="17" />
+      <module name="moqc.react-native-gesture-handler" target="17" />
+      <module name="moqc.react-native-get-location" target="17" />
+      <module name="moqc.react-native-image-picker" target="17" />
+      <module name="moqc.react-native-linear-gradient" target="17" />
+      <module name="moqc.react-native-localize" target="17" />
+      <module name="moqc.react-native-pager-view" target="17" />
+      <module name="moqc.react-native-picker_picker" target="17" />
+      <module name="moqc.react-native-restart" target="17" />
+      <module name="moqc.react-native-safe-area-context" target="17" />
+      <module name="moqc.react-native-screens" target="17" />
+      <module name="moqc.react-native-sensors" target="17" />
+      <module name="moqc.react-native-sound" target="17" />
+      <module name="moqc.react-native-sound-player" target="17" />
+      <module name="moqc.react-native-splash-screen" target="17" />
+      <module name="moqc.react-native-vector-icons" target="17" />
+      <module name="moqc.react-native-webview" target="17" />
+      <module name="moqc.rn-fetch-blob" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

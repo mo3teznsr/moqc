@@ -30,6 +30,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 import { open } from '../store';
 import i18n from '../i18n';
 import { AsyncStorage } from 'react-native';
+import axios from 'axios';
 
 
 class StudentLesson1 extends React.Component {
@@ -69,8 +70,9 @@ class StudentLesson1 extends React.Component {
         open.next(true)
         this.setState({ show_spinner: true })
         var course_id = this.props.route.params.course_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/course_eleasons/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/course_eleasons/${course_id}`);
         this.setState({ show_spinner: false })
+        console.log('course',course_id)
         if (response.status === 200) {
             this.setState({ lessons: response.data })
         }

@@ -18,12 +18,13 @@ import {
 } from 'react-native';
 import API from "../api/";
 import Axios from 'axios'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
 import CheckBox from 'react-native-check-box'
 import { open } from '../store';
 import { Backdrop } from 'react-native-backdrop';
 import i18n from '../i18n';
 import Select from './components/select';
+import axios from 'axios';
 
 
 class Attendance extends React.Component {
@@ -54,7 +55,7 @@ class Attendance extends React.Component {
     }
 
     checkAccess = async () => {
-        const res = await Axios.get("https://staging.moqc.ae/api/notes");
+        const res = await axioss.get("https://staging.moqc.ae/api/notes");
         if (res.status === 200) {
             console.log(res.data)
             this.setState({ notes: res.data })
@@ -71,7 +72,7 @@ class Attendance extends React.Component {
     getAttendance = async () => {
         open.next(true)
         var course_id = this.props.route.params.course_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/student_attendance/${course_id}?date=${this.state.formattedDate}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/student_attendance/${course_id}?date=${this.state.formattedDate}`);
         if (response.status === 200) {
             open.next(false)
             await this.setState({ attendanceList: response.data })
@@ -86,7 +87,7 @@ class Attendance extends React.Component {
         body.append("id", course_id)
         body.append("students", JSON.stringify(this.state.attendanceList))
         body.append("date", this.state.formattedDate)
-        const response = await Axios.post(`https://staging.moqc.ae/api/student_attendance_create/${course_id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/student_attendance_create/${course_id}`, body);
 
         if (response.status === 200) {
             open.next(false)
@@ -95,7 +96,7 @@ class Attendance extends React.Component {
     }
     getStudents = async () => {
         var course_id = this.props.route.params.course_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/course_students/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/course_students/${course_id}`);
         if (response.status === 200) {
             this.setState({ students: response.data })
         }
@@ -128,7 +129,7 @@ class Attendance extends React.Component {
                             attdanceList: this.state.attendanceList
                         })
                     }}
-                    isChecked={item.is_attend == 1}
+                    isChecked={item.is_attend == 0?false:true}
                     leftText={item.first_name + ' ' + item.last_name}
                 />
             </View>

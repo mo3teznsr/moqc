@@ -26,6 +26,7 @@ import { open } from '../store';
 import { Backdrop } from 'react-native-backdrop';
 import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
+import axios from 'axios';
 
 class StudentExam extends React.Component {
 
@@ -53,7 +54,7 @@ class StudentExam extends React.Component {
     getResult = async () => {
         let token = await AsyncStorage.getItem("@moqc:token");
         var course_id = this.props.route.params.course_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/student_exams/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/student_exams/${course_id}`);
         if (response.status === 200) {
             this.setState({ result: response.data })
         }

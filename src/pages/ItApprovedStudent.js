@@ -25,6 +25,7 @@ import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
 import { ActivityIndicator } from 'react-native-paper';
 import HeaderTop from './Header'
+import axios from 'axios';
 
 
 class ItApprovedStudent extends React.Component {
@@ -44,7 +45,7 @@ class ItApprovedStudent extends React.Component {
             pages: 1,
             from: 1,
             to: 10,
-            name:""
+            name:"",
 
         };
     }
@@ -56,43 +57,79 @@ class ItApprovedStudent extends React.Component {
     getStudents = async () => {
         this.setState({ show_spinner: true })
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/students`,
+        const response = await axios.get(`https://staging.moqc.ae/api/students`,
             {
                 headers: { "token": token }
             });
         if (response.status === 200) {
+           
             this.setState({ show_spinner: false })
             this.setState({
-                students: response.data,
+                students: response.data.filter(item=>item.microsoft_email==='0'),
                 pages: response.data.total_results,
                 from: response.data.from,
                 to: response.data.to,
             })
         }
+
+        axios.get(`https://staging.moqc.ae/api/courses`,
+        {
+            headers: { "token": token }
+        }).then(res=>{
+            this.setState({
+                courses:res.data
+            })
+        })
     }
 
 
     renderItem = ({ item }) => (
 
-        <View>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("ItStudentView", { st_id: item.id })}
-                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderRadius: 10, borderWidth: 1, borderColor: '#D5D5D5', padding: 10, margin: 10 }}>
-                <View>
-                    <Text><Text style={{ fontWeight: 'bold' }}>{i18n.t('Name')}</Text>    {item.first_name }</Text>
-                    <Text><Text style={{ fontWeight: 'bold' }}>{i18n.t('Email')}</Text>     {item.student_email}</Text>
-                    <Text><Text style={{ fontWeight: 'bold' }}>{i18n.t('Phone')}</Text>     {item.contact_phone}</Text>
+        <View style={{marginHorizontal:10,borderRadius:10,borderColor:"#999",borderWidth:1,paddingHorizontal:10,paddingVertical:5,marginBottom:10}}>
+           
+                <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                    <View>
+                    <Text style={{ fontWeight: 'bold' }}>{i18n.t('Name')}</Text> 
+                    <Text>   {item.first_name }</Text>
+                    </View>
+
+                    <View>
+                    <Text style={{ fontWeight: 'bold' }}>{i18n.t('Email')}</Text> 
+                    <Text>    {item.student_email}</Text>
+                    </View>
+                  
+                    
+                    
                 </View>
-                <View>
-                    <Text style={{ padding: 10, color: '#ffff', backgroundColor: '#222643', fontWeight: 'bold', borderRadius: 10 }}>{i18n.t('View')}</Text>
+                <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                    <View>
+                    <Text style={{ fontWeight: 'bold',textAlign:"left" }}>{i18n.t('Phone')}</Text> 
+                     <Text>   {item.contact_phone}</Text>
+                    </View>
+                    <View>
+                    <Text style={{ fontWeight: 'bold',textAlign:"left" }}>{i18n.t('Course')}</Text> 
+                     <Text>   {item.course[`course_name_${i18n.language}`]}</Text>
+                    </View>
+                    
                 </View>
-            </TouchableOpacity>
+               
+               
+           
+            <View>
+                 <TouchableOpacity
+                 style={{ padding: 10,marginTop:5, color: '#ffff',textAlign:"center", backgroundColor: '#222643', fontWeight: 'bold', borderRadius: 10 }}
+                  onPress={() => this.props.navigation.navigate("ItStudentView", { st_id: item.id })}
+               >
+                    <Text style={{color:"#fff",textAlign:"center"}} >{i18n.t('View')}</Text>
+                    </TouchableOpacity>
+                </View>
         </View>
 
     );
 
     render() {
         return (
-            <View style={{ flex: 10 }}>
+            <View >
                 {/* <TouchableOpacity onPress={() => this.setState({ createModal: true })} style={{ flexDirection: 'row', marginVertical: 10 }}>
                     <Icon active size={20} name='add' type="MaterialIcons" style={{ fontSize: 20 }} />
                     <Text style={{ fontSize: 15 }}>Create New Course</Text>
@@ -100,24 +137,25 @@ class ItApprovedStudent extends React.Component {
                 <ImageBackground
                     source={require('../assets/bg_img.png')}
                     style={{
-                        flex: 10,
+                       
                     }}>
                     <HeaderTop pagename={i18n.t("Students")} navigation={this.props.navigation} back={true} />
 
                     <View style={styles.input}>
-                        <Icon active size={20} name='search' type="MaterialIcons" style={{ left: 0, fontSize: 20, padding: 6, borderRadius: 30 }} />
+                        <Icon active size={25} name='search' type="MaterialIcons" style={{ left: 0, fontSize: 25, padding: 6, borderRadius: 30 }} />
                         <TextInput
                             onChangeText={(text) => { this.setState({ searchText: text });  }}
                             placeholder='Search'
                         />
                     </View>
-
+                    <View>
                     {this.state.show_spinner ? <ActivityIndicator color='green' size="large" /> :
                         <FlatList
                             data={this.state.students.filter(item=>item.first_name.toLowerCase().indexOf(this.state.searchText) >-1)}
                             renderItem={this.renderItem}
                             keyExtractor={item => item.id}
                         />}
+                        </View>
 
                     {/* <View style={{ marginVertical: 5, flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={{ padding: 5 }}>

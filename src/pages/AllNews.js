@@ -32,6 +32,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 import i18n from '../i18n';
 import RenderHtml from 'react-native-render-html';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 
 class AllNews extends React.Component {
@@ -57,7 +58,7 @@ class AllNews extends React.Component {
     news = async () => {
         this.setState({ showSpinner: true })
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/media`,
+        const response = await axios.get(`https://staging.moqc.ae/api/media`,
             {
                 headers: { "token": token }
             });

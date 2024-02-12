@@ -22,7 +22,7 @@ function TabTeam(props) {
             tabBarStyle: { backgroundColor: '#579976' },
         }}>
             <Tab.Screen name={i18n.t("Team Members")} component={Team1} />
-            <Tab.Screen name={i18n.t("Team Attendance")} component={TeamAttendance}/>
+            {/* <Tab.Screen name={i18n.t("Team Attendance")} component={TeamAttendance}/> */}
         </Tab.Navigator>
     );
 }

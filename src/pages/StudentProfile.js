@@ -77,7 +77,7 @@ class StudentProfile extends React.Component {
 
     getStudentProfile = async () => {
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/student_profile`,
+        const response = await axios.get(`https://staging.moqc.ae/api/student_profile`,
             {
                 headers: { "token": token }
             });
@@ -110,7 +110,7 @@ class StudentProfile extends React.Component {
         body.append("detail_address", this.state.studentDetail.detail_address)
         body.append("dob", this.state.studentDetail.dob)
         body.append("passport_expiry", this.state.studentDetail.passport_expiry)
-        const response = await Axios.post(`https://staging.moqc.ae/api/student_profile_update`,
+        const response = await axios.post(`https://staging.moqc.ae/api/student_profile_update`,
             body,
             {
                 headers: { "token": token }
@@ -139,7 +139,7 @@ class StudentProfile extends React.Component {
             body.append('attachment', res[0])
             // body.append("attachment", this.state.attachment)
 
-            Axios.post(`https://staging.moqc.ae/api/student_file_upload`, body,
+            axios.post(`https://staging.moqc.ae/api/student_file_upload`, body,
                 { headers: { 'Content-Type': 'multipart/form-data' } }).then(res => {
                     this.getStudentProfile()
                 })
@@ -165,7 +165,7 @@ class StudentProfile extends React.Component {
         }))
         // body.append("attachment", this.state.attachment)
 
-        const response = Axios.post(`https://staging.moqc.ae/api/student_file_upload`, body)
+        const response = axios.post(`https://staging.moqc.ae/api/student_file_upload`, body)
         if (response.status === 200) {
             this.setState({ showSpinner: false })
             this.getStudentProfile()

@@ -8,7 +8,6 @@ import {
     Image,
     SafeAreaView,
     ImageBackground,
-    KeyboardAvoidingView,
     Platform, WebView
 } from 'react-native';
 import { Avatar, RadioButton } from 'react-native-paper';
@@ -39,11 +38,12 @@ const data = [
     {
         label: 'العربية',
         value: 'ar'
-    }, {
-        label: 'English',
-        value: 'en'
+    }, 
+    // {
+    //     label: 'English',
+    //     value: 'en'
 
-    }
+    // }
 ];
 
 class Landing extends React.Component {
@@ -51,13 +51,15 @@ class Landing extends React.Component {
         super(props);
 
         this.state = {
-            selected: null, checked: 'first',loading:true
+            selected: 'ar', checked: 'first',loading:true
         };
     }
 
     componentDidMount() {
         this.load_data(this.props);
+        this.setLanguage(this.props)
     }
+    
 
 
     setLanguage = async (props) => {
@@ -71,7 +73,7 @@ class Landing extends React.Component {
             i18n
                 .changeLanguage(this.state.selected)
                 .then(() => {
-                    I18nManager.forceRTL(i18n.language === 'ar');
+                    I18nManager.forceRTL=true;
                     //   RNRestart.Restart();
                     this.props.navigation.navigate("Home")
                 });
@@ -286,7 +288,8 @@ class Landing extends React.Component {
                                             color: '#fff',
 
                                         }}>
-                                        {i18n.t('Get Started')} <Icon name="caretright" type="AntDesign" style={{ fontSize: 12, color: "#fff" }} />
+                                        {/* {i18n.t('Get Started')} */}
+                                        المتابعة <Icon name="caretright" type="AntDesign" style={{ fontSize: 12, color: "#fff" }} />
                                     </Text>
                                 </Button>
                               

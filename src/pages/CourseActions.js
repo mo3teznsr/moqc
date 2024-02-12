@@ -26,6 +26,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import i18n from '../i18n';
 import { t } from 'i18n-js';
 import { AsyncStorage } from 'react-native';
+import axios from 'axios';
 
 
 
@@ -63,7 +64,7 @@ class CourseActions extends React.Component {
         open.next(true)
         this.setState({ show_spinner: true })
         var class_id = this.props.route.params.class_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/courses/${class_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/courses/${class_id}`);
         this.setState({ show_spinner: false })
         if (response.status === 200) {
             open.next(false)
@@ -77,7 +78,7 @@ class CourseActions extends React.Component {
         body.append("class_id", class_id)
         body.append("course_name_en", this.state.name_en)
         body.append("course_name_ar", this.state.name_ar)
-        const response = await Axios.post(`https://staging.moqc.ae/api/course_create`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/course_create`, body);
 
         if (response.status === 200) {
             this.setState({ createModal: false })
@@ -90,7 +91,7 @@ class CourseActions extends React.Component {
         var body = new FormData()
         body.append("course_name_en", this.state.updatename_en)
         body.append("course_name_ar", this.state.updatename_ar)
-        const response = await Axios.post(`https://staging.moqc.ae/api/course_update/${this.state.updateid}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/course_update/${this.state.updateid}`, body);
 
         if (response.status === 200) {
             this.setState({ updateModal: false })
@@ -106,7 +107,7 @@ class CourseActions extends React.Component {
     }
 
     async deleteCourse(id) {
-        const response = await Axios.delete(`https://staging.moqc.ae/api/course_delete/${id}`);
+        const response = await axios.delete(`https://staging.moqc.ae/api/course_delete/${id}`);
         if (response.status === 200) {
             this.getCourses()
         }

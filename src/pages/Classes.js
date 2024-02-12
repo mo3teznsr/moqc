@@ -25,6 +25,7 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 
 
@@ -70,7 +71,7 @@ class Classes extends Component {
     getTeachers = async () => {
         this.setState({ show_spinner: true })
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get("https://staging.moqc.ae/api/users",
+        const response = await axiosos.get("https://staging.moqc.ae/api/users",
             { headers: { "token": token } });
         this.setState({ show_spinner: false })
         if (response.status === 200) {
@@ -79,7 +80,7 @@ class Classes extends Component {
     }
     getClasses = async () => {
         this.setState({ show_spinner: true })
-        const response = await Axios.get("https://staging.moqc.ae/api/courses");
+        const response = await axios.get("https://staging.moqc.ae/api/courses");
         this.setState({ show_spinner: false })
         if (response.status === 200) {
             this.setState({ classes: response.data })
@@ -94,7 +95,7 @@ class Classes extends Component {
         body.append("course_name_ar", this.state.name_ar)
         body.append("teacher_id", this.state.teacher)
         body.append("availability", 1)
-        const response = await Axios.post(`https://staging.moqc.ae/api/course_create`, body,
+        const response = await axios.post(`https://staging.moqc.ae/api/course_create`, body,
             { headers: { "token": token } });
 
         if (response.status === 200) {
@@ -109,7 +110,7 @@ class Classes extends Component {
         body.append("course_name_en", this.state.updatename_en)
         body.append("course_name_ar", this.state.updatename_ar)
         body.append("teacher_id", this.state.updateteacher)
-        const response = await Axios.post(`https://staging.moqc.ae/api/course_update/${this.state.updateid}`, body,
+        const response = await axios.post(`https://staging.moqc.ae/api/course_update/${this.state.updateid}`, body,
             { headers: { "token": token } });
 
         if (response.status === 200) {
@@ -127,7 +128,7 @@ class Classes extends Component {
 
     async deleteClass(id) {
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.delete(`https://staging.moqc.ae/api/course_delete/${id}`,
+        const response = await axios.delete(`https://staging.moqc.ae/api/course_delete/${id}`,
             { headers: { "token": token } });
         if (response.status === 200) {
             this.getClasses()

@@ -16,10 +16,9 @@ import {
 } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker, Form ,CheckBox} from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import DocumentPicker from "react-native-document-picker";
 import ActionButton from 'react-native-action-button';
 import Axios from 'axios'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
 import HeaderTop from "./Header";
 import i18n from '../i18n';
 import { AsyncStorage } from 'react-native';
@@ -46,6 +45,8 @@ class CreateExam extends React.Component {
             updatename_en: '',
             updatename_ar: '',
             updatedate: '',
+            course_id:'',
+            updatecourseId:"",
             updatecoursename: '',
             updatecourseId: '',
             cname:"",
@@ -72,12 +73,12 @@ class CreateExam extends React.Component {
 
     async getAllCourses() {
         var token=await AsyncStorage.getItem('@moqc:token')
-        var res=await Axios.get("https://staging.moqc.ae/api/students",{headers:{token:token}})
+        var res=await axios.get("https://staging.moqc.ae/api/students",{headers:{token:token}})
         if(res.status==200)
         {
             this.setState({students:res.data})
         }
-        const response = await Axios.get(`https://staging.moqc.ae/api/courses`);
+        const response = await axios.get(`https://staging.moqc.ae/api/courses`);
         if (response.status === 200) {
             await this.setState({ allCourses: response.data })
         }
@@ -87,7 +88,7 @@ class CreateExam extends React.Component {
     }
     getExams = async () => {
         this.setState({ show_spinner: true })
-        const response = await Axios.get(`https://staging.moqc.ae/api/exam_list`);
+        const response = await axios.get(`https://staging.moqc.ae/api/exam_list`);
         this.setState({ show_spinner: false })
         if (response.status === 200) {
             this.setState({ exams: response.data })
@@ -119,7 +120,7 @@ class CreateExam extends React.Component {
     }
 
     async deleteExam(id) {
-        const response = await Axios.delete(`https://staging.moqc.ae/api/exam_delete/${id}`);
+        const response = await axios.delete(`https://staging.moqc.ae/api/exam_delete/${id}`);
         if (response.status === 200) {
             this.getExams()
         }
@@ -135,9 +136,10 @@ class CreateExam extends React.Component {
         body.append("name_en", this.state.updatename_en)
         body.append("name_ar", this.state.updatename_ar)
         body.append("date", this.state.formattedDate)
+        body.append("course_id",this.state.updatecourseId)
         body.append('ids',ids)
         console.log(this.state.updateExamItem,ids)
-        const response = await Axios.post(`https://staging.moqc.ae/api/exam_update/${this.state.updateExamItem.id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/exam_update/${this.state.updateExamItem.id}`, body);
         this.setState({ show_spinner: false })
         if (response.status === 200) {
             this.setState({ updateModal: false })
@@ -150,7 +152,7 @@ class CreateExam extends React.Component {
         await this.setState({
             updateModal: true, updateExamItem: exam, updatename_en: exam.name_en,
             updatename_ar: exam.name_ar, updatedate: exam.date, uids: exam.ids.split(','),
-           
+           updatecourseId:exam.course_id
         })
     }
 
@@ -178,6 +180,7 @@ class CreateExam extends React.Component {
             </View>
             
             <View style={{ width: '20%', flexDirection: 'row' }}>
+            <Icon onPress={() => {this.props.navigation.push("ExamResult",{exam:item})}} active size={20} name='visibility' type="MaterialIcons" style={{  fontSize: 20, marginHorizontal: 5 }} />
                 {/* <Icon onPress={() => this.historyDownload(item.link)} active size={20} name='file-download' type="MaterialIcons" style={{ color: "#31314f", fontSize: 20 }} /> */}
                 <Icon onPress={() => this.updateExam(item)} active size={20} name='edit' type="MaterialIcons" style={{ color: "#579976", fontSize: 20, marginHorizontal: 5 }} />
                 <Icon onPress={() => this.deleteExam(item.id)} active size={20} name='trash-can-outline' type="MaterialCommunityIcons" style={{ color: "red", fontSize: 20 }} />
@@ -226,7 +229,7 @@ class CreateExam extends React.Component {
                             <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{i18n.t('Action')}</Text>
                         </View>
                     </View>
-                    {this.state.show_spinner ? <ActivityIndicator size='large' /> :
+                    {this.state.show_spinner ?<View style={{flex:1}}><ActivityIndicator size='large' /></View> :
                         <FlatList
                             data={this.state.exams}
                             renderItem={this.renderItem}
@@ -248,7 +251,7 @@ class CreateExam extends React.Component {
 
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
-                                <Text style={styles.heading}>{i18n.t('Upload Exam')}</Text>
+                                <Text style={styles.heading}>{i18n.t('Create Exam')}</Text>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                                     <Pressable >
                                         <Button disabled={!this.state.name_en || !this.state.name_ar || !this.state.date} onPress={() => this.createExam()}
@@ -281,21 +284,43 @@ class CreateExam extends React.Component {
                                         <Text>{i18n.t('Select Date')}</Text>
                                     </Pressable>
 
-                                    {this.state.openDate && (
-
-                                        <DateTimePicker
-                                            testID="dateTimePicker"
-                                            value={this.state.date}
-                                            mode='date'
-                                            is24Hour={true}
-                                            display="default"
-                                            onChange={this.onChange}
-                                        />
-                                    )}
+                                   
                                     <Pressable onPress={() => this.setState({ openDate: true })}>
                                         <Text style={{ padding: 10, justifyContent: 'center', alignItems: 'center', height: 40, width: '100%', borderWidth: 1, borderRadius: 10 }}
                                         >{this.state.date.toLocaleDateString()}</Text>
                                     </Pressable>
+                                    {this.state.openDate && (
+                                        <View>
+                                        <DateTimePicker
+                                            testID="dateTimePicker"
+                                            value={this.state.date}
+                                            mode="date"
+                                            
+                                            modal
+                                            is24Hour={true}
+                                            display="default"
+                                            onChange={this.onChange}
+                                        />
+                                       <Button  onPress={() => this.setState({openDate:false})}
+                                            style={{ backgroundColor: '#579976', width: '100%', justifyContent:"center", color: '#579976',borderRadius:15 }}>
+                                            <Text style={{ fontWeight: 'bold', color: '#fff' }}>{i18n.t('Submit')}</Text>
+                                        </Button>
+                                        </View>
+                                    )}
+                                </View>
+                                <View style={{ marginVertical: 10 }}>
+                                    <Text>{i18n.t('Course')}</Text>
+                                   <Picker 
+                                   placeholder={i18n.t("Select One")}
+                                   style={{ padding: 10,borderColor:"#000", height: 40, width: '100%', borderWidth: 1, borderRadius: 10 }}
+                                   selectedValue={this.state.course_id}
+                                   onValueChange={(course_id, itemIndex) => {
+                                       
+                                       this.setState({ course_id })
+                                   }}
+                                   >
+                                    {this.state.allCourses.map(item=><Picker.Item key={item.id} label={item[`course_name_${i18n.language}`]} value={item.id}  />)}
+                                   </Picker>
                                 </View>
 
                                 <ScrollView>
@@ -380,6 +405,21 @@ class CreateExam extends React.Component {
                                         <Text style={{ padding: 10, justifyContent: 'center', alignItems: 'center', height: 40, width: '100%', borderWidth: 1, borderRadius: 10 }}
                                         >{this.state.date.toLocaleDateString()}</Text>
                                     </Pressable>
+                                </View>
+
+                                <View style={{ marginVertical: 10 }}>
+                                    <Text>{i18n.t('Course')}</Text>
+                                   <Picker 
+                                   placeholder={i18n.t("Select One")}
+                                   style={{ padding: 10,borderColor:"#000", height: 40, width: '100%', borderWidth: 1, borderRadius: 10 }}
+                                   selectedValue={this.state.updatecourseId}
+                                   onValueChange={(updatecourseId, itemIndex) => {
+                                       
+                                       this.setState({ updatecourseId })
+                                   }}
+                                   >
+                                    {this.state.allCourses.map(item=><Picker.Item key={item.id} label={item[`course_name_${i18n.language}`]} value={item.id}  />)}
+                                   </Picker>
                                 </View>
 
                                 <ScrollView>

@@ -8,11 +8,12 @@ import DocumentPicker, {
     isInProgress,
     types,
   } from 'react-native-document-picker'
-  import DateTimePicker from '@react-native-community/datetimepicker';
+  import DateTimePicker from 'react-native-date-picker';
   import moment from 'moment';
 
 import axios from "axios";
 import { withTranslation } from "react-i18next";
+import i18n from "../../i18n";
 var FormData = require('form-data');
 const Step5 =(props)=>{
     const [showPass,setPass]=useState(false)
@@ -75,7 +76,7 @@ const Step5 =(props)=>{
 
 
 const styles=StyleSheet.create({
-    txt:{marginTop:10,fontSize:15,fontWeight:'600',marginHorizontal:10},
+    txt:{marginTop:10,fontSize:15,fontWeight:'600',marginHorizontal:10,textAlign:i18n.language==="en"?"left": "right"},
     img:{height:40,width:40,marginHorizontal:5},
     img1:{height:30,width:30,marginHorizontal:5},
     error:{marginHorizontal:10,fontSize:14,color:"#e41e3f",marginBottom:10},

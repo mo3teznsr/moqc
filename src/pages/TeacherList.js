@@ -39,7 +39,7 @@ class TeacherList extends React.Component {
             exams: "none",
             classes: "none",
             students_approved: 'none',
-            manage_course:"none"
+            manage_course:"none",access:{}
 
         };
         this.getLanguage()
@@ -52,6 +52,7 @@ class TeacherList extends React.Component {
     checkAccess = async () => {
         let access = await AsyncStorage.getItem("@moqc:page_access");
         access = JSON.parse(access);
+        console.log(access)
         await this.setState({
             students_approved: access.students_approved[0],
             exams: access.exams[0],
@@ -59,6 +60,7 @@ class TeacherList extends React.Component {
             course: access.course[0],
             courses: access.courses[0],
             manage_course: access.manage_course[0],
+            access
 
         })
     }
@@ -71,7 +73,7 @@ class TeacherList extends React.Component {
 
         return (
             <ScrollView>
-            <View style={{ flex: 10 }}>
+            <View style={{ flex: 1 }}>
                 <HeaderTop pagename={i18n.t("Dashboard")} navigation={this.props.navigation} back={true} />
 
                 <ImageBackground
@@ -79,40 +81,41 @@ class TeacherList extends React.Component {
                     style={{
                         flex: 10,
                     }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap' }}>
+                    <View style={{  paddingTop:20 }}>
 
-                        {this.state.students_approved != "none" ?
+                        {/* {this.state.students_approved != "none" ?
                             <TouchableOpacity style={{ borderColor: "#C8DACE", margin: 20, height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
                                 onPress={() => this.props.navigation.navigate("Teacher", { classes: this.state.classes })}>
                                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('View All Students')}</Text>
                             </TouchableOpacity>
                             : null
-                        }
+                        } */}
 
-{this.state.students_approved!="none"?<TouchableOpacity style={{ borderColor: "#C8DACE", height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
+                        {this.state.students_approved!="none"&&<TouchableOpacity style={styles.listItem}
                             onPress={() => this.props.navigation.navigate("CSApprovedStudents")}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t("Approved Students")}</Text></TouchableOpacity>:<Text></Text>}
+                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t(`Second stage Approval`)}</Text></TouchableOpacity>}
                         
-                        {this.state.courses != "none" ?
-                        <TouchableOpacity style={{ borderColor: "#C8DACE", height: 200,margin:20, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
+                        {this.state.courses != "none" &&
+                        <TouchableOpacity style={styles.listItem}
+
                             onPress={() => this.props.navigation.navigate("Course")}>
                             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('Courses')}</Text>
                         </TouchableOpacity>
-                        :null}
+                        }
 
-                        {this.state.manage_course != "none" ?
-                        <TouchableOpacity style={{ borderColor: "#C8DACE", margin: 20, height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
+                        {this.state.manage_course != "none" &&
+                        <TouchableOpacity style={styles.listItem}
                                 onPress={() => this.props.navigation.navigate("ManageCourse", { })}>
                                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('Manages Course')}</Text>
                             </TouchableOpacity>
-                          :null}
+                          }
 
-                        {this.state.exams != "none" ?
-                            <TouchableOpacity style={{ borderColor: "#C8DACE", height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
+                        {this.state.exams != "none" &&
+                            <TouchableOpacity style={styles.listItem}
                                 onPress={() => this.props.navigation.navigate("CreateExam")}>
                                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('Exams')}</Text>
                             </TouchableOpacity>
-                            : null
+                            
                         }
                     </View>
 
@@ -128,7 +131,15 @@ const styles = StyleSheet.create({
     wrapper: {
         flex: 1
     },
-    sectionWrapper: {
+    listItem:{
+        borderColor: "#C8DACE",
+        borderBottomWidth:1,
+        borderRadius:12,
+        paddingHorizontal:0,
+        paddingVertical:8
+    },
+
+    sectionWrap: {
         padding: 20
     },
     heading: {

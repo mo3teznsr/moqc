@@ -76,9 +76,11 @@ class DashboardStudent extends React.Component {
 this.setState({class_id})
 if(class_id)
 {
-        const response = await Axios.get(`https://staging.moqc.ae/api/courses/${class_id}`);
+   
+        const response = await axios.get(`https://staging.moqc.ae/api/courses/${class_id}`);
         if (response.status === 200) {
-            await this.setState({ courses: response.data })
+            console.log("cours",class_id,response.data.length)
+            await this.setState({ courses: response.data.filter(item=>item.id==class_id) })
         }
     }
     else{

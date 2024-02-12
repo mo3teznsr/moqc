@@ -31,6 +31,7 @@ import DocumentPicker from "react-native-document-picker";
 import RNFetchBlob from 'rn-fetch-blob'
 import Toast from 'react-native-simple-toast';
 import i18n from '../i18n';
+import axios from 'axios';
 
 
 class TeamPassword extends React.Component {
@@ -49,7 +50,7 @@ class TeamPassword extends React.Component {
         let body = new FormData()
 
         body.append("password", this.state.password)
-        const response = await Axios.post(`https://staging.moqc.ae/api/editTeamMemeber/${team_id}`,
+        const response = await axios.post(`https://staging.moqc.ae/api/editTeamMemeber/${team_id}`,
             body,
             {
                 headers: { "token": token }

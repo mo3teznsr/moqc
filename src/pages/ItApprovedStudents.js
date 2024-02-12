@@ -23,6 +23,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import CourseStudents from './CourseStudents';
 import i18next from 'i18next';
 import i18n from '../i18n';
+import axios from 'axios';
 
 
 
@@ -45,7 +46,7 @@ class ItApprovedStudents extends React.Component {
     }
 
     getCourses = async () => {
-        const response = await Axios.get("https://staging.moqc.ae/api/courses");
+        const response = await axios.get("https://staging.moqc.ae/api/courses");
         if (response.status === 200) {
             this.setState({ courses: response.data })
         }
@@ -55,7 +56,7 @@ class ItApprovedStudents extends React.Component {
     getStudents = async () => {
         var course_id = this.props.route.params.course_id
         console.log("courseee", course_id)
-        const response = await Axios.get(`https://staging.moqc.ae/api/course_students/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/course_students/${course_id}`);
         if (response.status === 200) {
             this.setState({ students: response.data })
         }

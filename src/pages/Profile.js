@@ -32,7 +32,8 @@ import DocumentPicker from "react-native-document-picker";
 import RNFetchBlob from 'rn-fetch-blob'
 import i18n from '../i18n';
 import Toast from 'react-native-simple-toast';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
+import axios from 'axios';
 
 
 
@@ -81,7 +82,7 @@ class Profile extends React.Component {
 
     getStudentProfile = async () => {
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.post(`https://staging.moqc.ae/api/profile`, '',
+        const response = await axios.post(`https://staging.moqc.ae/api/profile`, '',
             {
                 headers: { "token": token }
             });
@@ -109,7 +110,7 @@ class Profile extends React.Component {
         // body.append("dob", this.state.studentDetail.dob)
         body.append("passport_expiration", this.state.studentDetail.passport_expiration)
         body.append("emirates_id_expiration", this.state.studentDetail.emirates_id_expiration)
-        const response = await Axios.post(`https://staging.moqc.ae/api/editProfile`,
+        const response = await axios.post(`https://staging.moqc.ae/api/editProfile`,
             body,
             {
                 headers: { "token": token }
@@ -139,7 +140,7 @@ class Profile extends React.Component {
             body.append('file', res[0])
             // body.append("attachment", this.state.attachment)
 
-            Axios.post(`https://staging.moqc.ae/api/profile_upload`, body,
+            axios.post(`https://staging.moqc.ae/api/profile_upload`, body,
                 { headers: { "token": token } }).then(res => {
                     Toast.showWithGravity('Update Successfull', Toast.SHORT, Toast.TOP);
                     this.getStudentProfile()
@@ -165,7 +166,7 @@ class Profile extends React.Component {
         }))
         // body.append("attachment", this.state.attachment)
 
-        const response = Axios.post(`https://staging.moqc.ae/api/profile_upload`, body)
+        const response = axios.post(`https://staging.moqc.ae/api/profile_upload`, body)
         if (response.status === 200) {
             this.setState({ show_spinner: false })
         }

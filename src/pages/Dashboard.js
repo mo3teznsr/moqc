@@ -48,7 +48,8 @@ class Dashboard extends React.Component {
             students_registered: "none",
             team: "none",
             contact: "none",
-            classes: "none"
+            classes: "none",
+            access:{}
         };
 
         this.checkAccess();
@@ -65,6 +66,7 @@ class Dashboard extends React.Component {
             team: access.team[0],
             contact: access.contact[0],
             course: access.course[0],
+            access:access
         })
         console.log("accesss", this.state.classes)
     }
@@ -100,7 +102,7 @@ class Dashboard extends React.Component {
                             style={{
                                 flex: 10,
                             }}>
-                            <Content style={{ margin: 20 }}>
+                            <View style={{ margin: 20 }}>
                                 <View>
                                     <Text style={{ fontWeight: "bold", fontSize: 16 }}>{i18n.t('Select your Dashboard and Navigate')}</Text>
                                 </View>
@@ -122,9 +124,9 @@ class Dashboard extends React.Component {
                                 </View> */}
                                 </View>
 
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'center',gap:10 }}>
                                     {
-                                        this.state.students != "none" ?
+                                        this.state.students != "none" &&
 
                                             <TouchableOpacity
                                             style={styles.item}
@@ -137,15 +139,15 @@ class Dashboard extends React.Component {
                                                         resizeMode: "cover",
                                                     }} />
                                                 <Text style={{ fontWeight: "bold", fontSize: 16, textAlign: 'center', paddingHorizontal: 10 }}>
-                                                    {i18n.t('Customer Service')}
+                                                    {i18n.t('Customer Service Dashboard')}
                                                 </Text>
 
                                             </TouchableOpacity>
-                                            : null
+                                           
                                     }
 
                                     {
-                                        this.state.classes != "none" || this.state.student_approved != "none" ?
+                                        this.state.courses != "none" || this.state.student_approved != "none"||this.state.access?.exams!="none" ||this.state.access?.manage_course!="none"?
                                             <TouchableOpacity style={styles.item}
                                                 onPress={() => this.props.navigation.navigate("Teacher")}>
                                                 <Image
@@ -164,7 +166,7 @@ class Dashboard extends React.Component {
                                     }
                                 </View>
 
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'center',gap:10 }}>
                                     {
                                         this.state.students_registered_new != "none" || this.state.students_registered != "none" ?
                                             <TouchableOpacity style={styles.item}
@@ -256,7 +258,7 @@ class Dashboard extends React.Component {
                                 }
 
                             </View> */}
-                            </Content>
+                            </View>
                         </ImageBackground>
 
                     </View>
@@ -269,9 +271,9 @@ class Dashboard extends React.Component {
 export default withTranslation()(Dashboard)
 
 const styles = StyleSheet.create({
-    item:{justifyContent: "center", textAlign: 'center', padding: 10, borderWidth: 1, shadowRadius: 20,
+    item:{justifyContent: "center",alignItems:"center", textAlign: 'center', padding: 10, borderWidth: 1, shadowRadius: 20,
     borderRadius: 20, borderColor: '#D2DFD4', shadowColor: '#D2DFD4', shadowOffset: { width: 10, height: 10 },
-    width: 165, marginBottom: 10, height: 200,marginHorizontal:5},
+    width: 165, marginBottom: 10, height: 220,marginHorizontal:5},
     wrapper: {
         flex: 1
     },
@@ -292,7 +294,7 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'center'
     },
     textInput: {
         textAlign: I18nManager.isRTL

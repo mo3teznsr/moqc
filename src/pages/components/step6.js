@@ -8,15 +8,17 @@ import DocumentPicker, {
     isInProgress,
     types,
   } from 'react-native-document-picker'
-  import DateTimePicker from '@react-native-community/datetimepicker';
+  import DateTimePicker from 'react-native-date-picker';
   import moment from 'moment';
 import axios from "axios";
 import { withTranslation } from "react-i18next";
 import Select from "./select";
+import i18n from "../../i18n";
 var FormData = require('form-data');
 const Step6 =(props)=>{
     const [showPass,setPass]=useState(false)
     const [showId,setId]=useState(false)
+    const [errorMsg,setErrorMsg]=useState("")
     const [error,setError]=useState(false)
     const {t, i18n} = props;
     const [days,setDays]=useState([])
@@ -41,7 +43,7 @@ const Step6 =(props)=>{
         }
         setMonths(list1)
          var list2=[]
-         for(let i=1900;i<=2022;i++)
+         for(let i=Number(moment().format("YYYY"));i<=Number(moment().add(50,"years").format("YYYY"));i++)
         {
         list2.push({name:i.toString(),value:i})
         }
@@ -74,7 +76,7 @@ const Step6 =(props)=>{
            </Pressable>
                
         </View> */}
-        {props.data.country==230? <View style={styles.main}>
+         <View style={styles.main}>
         <View style={styles.container}>
             <View style={{flexDirection:"row",justifyContent:"space-between"}}>
             <Image source={require('../../assets/id.png')} style={styles.img}   />
@@ -86,7 +88,7 @@ const Step6 =(props)=>{
            
                
            <Pressable onPress={()=>{
-            DocumentPicker.pickSingle({ type: [types.images],}).then(data=>{
+            DocumentPicker.pickSingle({ type: [types.allFiles],}).then(data=>{
                 console.log(data)
                 props.update({emirates_id: {
                     name: data.name,
@@ -105,7 +107,7 @@ const Step6 =(props)=>{
         
 
 
-        </View>:
+        </View>
         <View style={styles.main}>
         <View style={styles.container}>
         <View style={{flexDirection:"row",justifyContent:"space-between"}}>
@@ -117,7 +119,7 @@ const Step6 =(props)=>{
            
                 
            <Pressable onPress={()=>{
-            DocumentPicker.pickSingle({ type: [types.images],}).then(data=>{
+            DocumentPicker.pickSingle({ type: [types.allFiles],}).then(data=>{
                 props.update({passport:{
                     name: data.name,
                     type: data.type,
@@ -137,10 +139,10 @@ const Step6 =(props)=>{
          
 
 
-        </View>}
+        </View>
         
-        <View style={styles.container}>
-            <Text style={styles.txt}>{t('Expiration Date')} </Text>
+        <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
+            <Text style={styles.txt}>{t('Passport Expiration Date')} </Text>
 
             {/* <Text style={styles.txt}>{props.data.passport_expiry} </Text> */}
             
@@ -156,13 +158,13 @@ const Step6 =(props)=>{
       title={t('Day')}
       show={showDays}
       field="value"
-      selected={1}
+      selected={dob.day}
       open={()=>setShowDays(true)}
       onSelect={(item)=>{
         setShowDays(false)
         setDOB({...dob,day:item})
-        props.update({passport_expiry:dob.year+'-'+dob.month+'-'+dob.day})
-        props.update({id_expiration:dob.year+'-'+dob.month+'-'+dob.day})
+        props.update({passport_expiry:dob.year+'-'+dob.month+'-'+item})
+        props.update({id_expiration:dob.year+'-'+dob.month+'-'+item})
     }}
       render={ 'name'}
       close={()=>setShowDays(false)} />
@@ -175,13 +177,13 @@ const Step6 =(props)=>{
       title={t('Month')}
       show={showMonth}
       field="value"
-      selected={1}
+      selected={dob.month}
       open={()=>setShowMonth(true)}
       onSelect={(item)=>{
         setShowMonth(false)
         setDOB({...dob,month:item})
-        props.update({passport_expiry:dob.year+'-'+dob.month+'-'+dob.day})
-        props.update({id_expiration:dob.year+'-'+dob.month+'-'+dob.day})
+        props.update({passport_expiry:dob.year+'-'+item+'-'+dob.day})
+        props.update({id_expiration:dob.year+'-'+item+'-'+dob.day})
     }}
       render={ 'name'}
       close={()=>setShowMonth(false)} />
@@ -193,13 +195,13 @@ const Step6 =(props)=>{
       title={t('Year')}
       show={showYear}
       field="value"
-      selected={props.data.year}
+      selected={dob.year}
       open={()=>setShowYears(true)}
       onSelect={(item)=>{
         setShowYears(false)
         setDOB({...dob,year:item})
-        props.update({passport_expiry:dob.year+'-'+dob.month+'-'+dob.day})
-        props.update({id_expiration:dob.year+'-'+dob.month+'-'+dob.day})
+        props.update({passport_expiry:item+'-'+dob.month+'-'+dob.day})
+        props.update({id_expiration:item+'-'+dob.month+'-'+dob.day})
         
     }}
       render={ 'name'}
@@ -212,7 +214,11 @@ const Step6 =(props)=>{
 
                              
 {error?<View style={{padding:18,borderRadius:15,backgroundColor:"#eb445a",marginBottom:10}}>
-    <Text style={{color:"#fff"}}>{props.data.country==230?"Emirates id information required":"passport information is required"}</Text></View>:<View></View>}
+    <Text style={{color:"#fff"}}>{props.data.country==230?"Emirates id information required":"Passport information is required"}</Text></View>:<View></View>}
+    
+    {errorMsg?<View style={{padding:18,borderRadius:15,backgroundColor:"#eb445a",marginBottom:10}}>
+    <Text style={{color:"#fff"}}>{errorMsg}</Text></View>:<View></View>}
+    
 
 <View style={{flex:1,flexDirection:"row",justifyContent:"center",alignContent:"center",marginTop:0,marginBottom:5}}>
                             <Pressable  onPress={async() => {
@@ -235,16 +241,28 @@ const Step6 =(props)=>{
                                     
                                 }
                                // body.append('email',props.data.email)
-                               console.log(body)
+                              //  console.log(body)
 
                           
-                            var res=  axios.post('https://staging.moqc.ae/api/registration',body, {headers: {
+                             axios.post('https://staging.moqc.ae/api/registration',body, {headers: {
                                     "Content-Type": "multipart/form-data",
-                                  }})
+                                  }}).then(res=>{
+                                    console.log(res.data)
+                                    if(res.data.result)
+                                    {
+                                      props.update({active_step:6})
+                                    }
+                                    else{
+                                      setError(true)
+                                        setErrorMsg(res.data.message)
+                                    }
+                                  }).catch(e=>{
+                                    console.log('error',e.response.data)
+                                  })
 
-                                    console.log(res)
+                                   
                                     
-                                        props.update({active_step:6})
+                                    //    props.update({active_step:6})
                                     
                                    
                                 
@@ -270,7 +288,7 @@ const Step6 =(props)=>{
 
 
 const styles=StyleSheet.create({
-    txt:{marginTop:10,fontSize:15,fontWeight:'600',marginHorizontal:10},
+    txt:{marginTop:10,fontSize:15,fontWeight:'600',marginHorizontal:10,textAlign:i18n.language==="en"?"left": "right"},
     img:{height:40,width:40,marginHorizontal:5},
     img1:{height:30,width:30,marginHorizontal:5},
     error:{marginHorizontal:10,fontSize:14,color:"#e41e3f",marginBottom:10},

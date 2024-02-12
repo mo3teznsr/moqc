@@ -77,17 +77,17 @@ class CSList extends React.Component {
                     style={{
                         flex: 10,
                     }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ }}>
                            {this.state.students_registered_new!="none"? <TouchableOpacity style={{
-                                borderColor: "#C8DACE", margin: 20, height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center'
+                                borderColor: "#C8DACE", margin: 20,paddingVertical:10,   borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center'
                             }} onPress={() => this.props.navigation.navigate("Support")}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('View All Students')}</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('First Stage Admission')}</Text>
                             </TouchableOpacity>:<Text></Text>}
                         
 
-                        {this.state.students_approved!="none"?<TouchableOpacity style={{ borderColor: "#C8DACE", height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
+                        {/* {this.state.students_approved!="none"?<TouchableOpacity style={{ borderColor: "#C8DACE", height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
                             onPress={() => this.props.navigation.navigate("Teacher",{classes:[]})}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t("View All Students")}</Text></TouchableOpacity>:<Text></Text>}
+                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t("View All Students")}</Text></TouchableOpacity>:<Text></Text>} */}
                     </View>
 
                 </ImageBackground >

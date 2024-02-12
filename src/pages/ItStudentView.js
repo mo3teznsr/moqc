@@ -15,7 +15,7 @@ import {
     Dimensions,
 } from 'react-native';
 import API from "../api/";
-const Axios = require('axios');
+
 
 import CheckBox from 'react-native-check-box'
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker, Form } from 'native-base';
@@ -24,6 +24,7 @@ import CourseStudents from './CourseStudents';
 import HeaderTop from './Header'
 import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
+import axios from 'axios';
 
 class ItStudentView extends React.Component {
 
@@ -36,7 +37,8 @@ class ItStudentView extends React.Component {
             createModal: false,
             classes: [],
             student_level: '',
-            student_class: ''
+            student_class: '',
+            emails:[]
 
         };
     }
@@ -48,19 +50,23 @@ class ItStudentView extends React.Component {
 
     getClasses = async () => {
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/classes`,
+        const response = await axios.get(`https://staging.moqc.ae/api/classes`,
             {
                 headers: { "token": token }
             });
         if (response.status === 200) {
             this.setState({ classes: response.data })
         }
+        axios.get(`https://staging.moqc.ae/api/getEmails`,
+        {
+            headers: { "token": token }
+        }).then(res=>this.setState({emails:res.data}))
     }
 
     getStudentDetails = async () => {
         var st_id = this.props.route.params.st_id
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/students/${st_id}`,
+        const response = await axios.get(`https://staging.moqc.ae/api/students/${st_id}`,
             {
                 headers: { "token": token }
             });
@@ -82,12 +88,13 @@ class ItStudentView extends React.Component {
         body.append("password", this.state.studentDetail.password)
         body.append("student_level", this.state.studentDetail.student_level)
         body.append("student_class", this.state.studentDetail.student_class)
-        const response = await Axios.post(`https://staging.moqc.ae/api/student_update/${st_id}`,
+        const response = await axios.post(`https://staging.moqc.ae/api/student_update/${st_id}`,
             body,
             {
                 headers: { "token": token }
             });
         if (response.status === 200) {
+            this.props.navigation.goBack()
             this.getStudentDetails()
         }
     }
@@ -110,45 +117,54 @@ class ItStudentView extends React.Component {
 
                     <View style={{ margin: 10 }}>
                         <View style={{ backgroundColor: '#ffff', borderRadius: 10, borderWidth: 1, borderColor: '#D5D5D5', padding: 10 }}>
-                            <View style={{ backgroundColor: '#F7F8FA', borderRadius: 10, padding: 10 }}>
-                                <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: "center" }}>
-                                    <Text style={{ width: '30%', fontWeight: 'bold' }}>{i18n.t('Student ID')} </Text>
-                                    <Text style={{ padding: 10, height: 40, width: '70%' }}>{item.student_id}</Text>
+                            <View style={{ backgroundColor: '#F7F8FA', borderRadius: 10,gap:10, padding: 10 }}>
+                                <View style={{ marginVertical: 5, flexDirection:"row",gap:15 }}>
+                                    <Text style={styles.label}>{i18n.t('Student ID')}:  </Text>
+                                    <Text style={{  }}>{item.student_id}</Text>
                                 </View>
-                                <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: "center" }}>
-                                    <Text style={{ width: '30%', fontWeight: 'bold' }}>{i18n.t('Student Email')} : </Text>
-                                    <TextInput style={{ padding: 10, height: 40, width: '70%', borderWidth: 1, borderRadius: 10 }}
+                                <View style={{ marginVertical: 5, }}>
+                                    <Text style={styles.label}>{i18n.t('Student Email')} : </Text>
+                                    <TextInput style={{ padding: 10, height: 50, borderWidth: 1, borderRadius: 10 }}
                                         onChangeText={(e) => {
                                             var clas = this.state.studentDetail
                                             clas.student_email = e
                                             this.setState({ studentDetail: clas })
                                         }}>{item.student_email}</TextInput>
                                 </View>
-                                <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: "center" }}>
-                                    <Text style={{ width: '30%', fontWeight: 'bold' }}>{i18n.t('Microsoft Email')} : </Text>
-                                    <TextInput style={{ padding: 10, height: 40, width: '70%', borderWidth: 1, borderRadius: 10 }}
-                                        onChangeText={(e) => {
-                                            var clas = this.state.studentDetail
-                                            clas.microsoft_email = e
-                                            this.setState({ studentDetail: clas })
-                                        }}>{item.microsoft_email}</TextInput>
+                                <View style={{ marginVertical: 5,   }}>
+                                    <Text style={styles.label}>{i18n.t('Microsoft Email')} : </Text>
+                                    <View  style={{ borderRadius: 10, borderWidth: 1, width: '100%' }}>
+                                    <Picker
+                                            placeholder={i18n.t("Select One")}
+                                            selectedValue={this.state.studentDetail.microsoft_email}
+                                            onValueChange={(microsoft_email, itemIndex) => {
+                                                
+                                                this.setState({ studentDetail:{...this.state.studentDetail,microsoft_email} })
+                                            }}
+                                        >
+                                            {this.state.emails.map(item => {
+                                                return <Picker.Item label={item.email} value={item.id} />
+                                            })}
+
+                                        </Picker>
+                                        </View>
                                 </View>
-                                <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: "center" }}>
-                                    <Text style={{ width: '30%', fontWeight: 'bold' }}>{i18n.t('Student Password')} : </Text>
-                                    <TextInput style={{ padding: 10, height: 40, width: '70%', borderWidth: 1, borderRadius: 10 }}
+                                <View style={{ marginVertical: 5,  }}>
+                                    <Text style={styles.label}>{i18n.t('Student Password')} : </Text>
+                                    <TextInput style={{ padding: 10, height: 50,  borderWidth: 1, borderRadius: 10 }}
                                         onChangeText={(e) => {
                                             var clas = this.state.studentDetail
                                             clas.password = e
                                             this.setState({ studentDetail: clas })
-                                        }}>{item.password}</TextInput>
+                                        }}></TextInput>
                                 </View>
-                                <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: "center" }}>
-                                    <Text style={{ width: '30%', fontWeight: 'bold' }}>{i18n.t('Student Class')} : </Text>
-                                    <View style={{ borderRadius: 10, padding: 10, borderWidth: 1, width: '70%' }}>
+                                <View style={{ marginVertical: 5, }}>
+                                    <Text style={styles.label}>{i18n.t('Course')} : </Text>
+                                    <View style={{ borderRadius: 10,  borderWidth: 1, width: '100%' }}>
                                         <Picker
-                                            placeholder="Select One"
+                                            placeholder={i18n.t("Select One")}
                                             placeholderStyle={{ color: "#2874F0" }}
-                                            style={{ height: 20 }}
+                                            
                                             selectedValue={this.state.student_class}
                                             onValueChange={(itemValue, itemIndex) => {
                                                 var clas = this.state.studentDetail
@@ -164,13 +180,12 @@ class ItStudentView extends React.Component {
                                     </View>
                                     {/* <TextInput style={{ padding: 10, height: 40, width: '70%', borderWidth: 1, borderRadius: 10 }}>{item.student_class}</TextInput> */}
                                 </View>
-                                <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: "center" }}>
-                                    <Text style={{ width: '30%', fontWeight: 'bold' }}>{i18n.t('Student Level')} : </Text>
-                                    <View style={{ borderRadius: 10, padding: 10, borderWidth: 1, width: '70%' }}>
+                                <View style={{ marginVertical: 5,  }}>
+                                    <Text style={styles.label}>{i18n.t('Student Level')} : </Text>
+                                    <View style={{ borderRadius: 10, borderWidth: 1, width: '100%' }}>
                                         <Picker
-                                            placeholder="Select One"
-                                            placeholderStyle={{ color: "#2874F0" }}
-                                            style={{ height: 20 }}
+                                            placeholder={i18n.t("Select One")}
+                                           
                                             selectedValue={this.state.student_level}
                                             onValueChange={(itemValue, itemIndex) => {
                                                 var clas = this.state.studentDetail
@@ -178,9 +193,9 @@ class ItStudentView extends React.Component {
                                                 this.setState({ student_level: itemValue, studentDetail: clas, })
                                             }}
                                         >
-                                            <Picker.Item label="Beginner" value="1" />
-                                            <Picker.Item label="Excellent" value="2" />
-                                            <Picker.Item label="Very Good" value="3" />
+                                            <Picker.Item label={i18n.t("Beginner")} value="1" />
+                                            <Picker.Item label={i18n.t("Medium")} value="2" />
+                                            <Picker.Item label={i18n.t("Excellent")} value="3" />
                                         </Picker>
                                     </View>
                                 </View>
@@ -200,6 +215,10 @@ export default ItStudentView
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1
+    },
+    label:{
+        fontWeight:"500",
+        textAlign:"left"
     },
     sectionWrapper: {
         padding: 20

@@ -18,10 +18,11 @@ import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Ite
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ActionButton from 'react-native-action-button';
 import Axios from 'axios'
-
-import DateTimePicker from '@react-native-community/datetimepicker';
+import NoDocument from "../assets/no-document.png"
+import DateTimePicker from 'react-native-date-picker';
 import i18n from '../i18n';
 import { AsyncStorage } from 'react-native';
+import axios from 'axios';
 
 
 class Exam extends React.Component {
@@ -60,7 +61,7 @@ class Exam extends React.Component {
 
     getExams = async () => {
         var course_id = this.props.route.params.course_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/exam_list/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/exam_list/${course_id}`);
         if (response.status === 200) {
             this.setState({ exams: response.data })
         }
@@ -73,7 +74,7 @@ class Exam extends React.Component {
         body.append("name_en", this.state.name_en)
         body.append("name_ar", this.state.name_ar)
         body.append("date", this.state.date)
-        const response = await Axios.post(`https://staging.moqc.ae/api/exam_create/${course_id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/exam_create/${course_id}`, body);
 
         if (response.status === 200) {
             this.setState({ createModal: false, name_en: '', name_ar: '', date: new Date() })
@@ -82,7 +83,7 @@ class Exam extends React.Component {
     }
 
     async deleteExam(id) {
-        const response = await Axios.delete(`https://staging.moqc.ae/api/exam_delete/${id}`);
+        const response = await axios.delete(`https://staging.moqc.ae/api/exam_delete/${id}`);
         if (response.status === 200) {
             this.getExams()
         }
@@ -94,7 +95,7 @@ class Exam extends React.Component {
         body.append("name_en", this.state.updatename_en)
         body.append("name_ar", this.state.updatename_ar)
         body.append("date", this.state.date)
-        const response = await Axios.post(`https://staging.moqc.ae/api/exam_update/${this.state.updateExamItem.id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/exam_update/${this.state.updateExamItem.id}`, body);
 
         if (response.status === 200) {
             this.setState({ updateModal: false })
@@ -127,7 +128,7 @@ class Exam extends React.Component {
             <View style={{ width: '20%', flexDirection: 'row' }}>
                 {/* <Icon onPress={() => this.historyDownload(item.link)} active size={20} name='file-download' type="MaterialIcons" style={{ color: "#31314f", fontSize: 20 }} /> */}
                 {/* <Icon onPress={() => this.updateExam(item)} active size={20} name='edit' type="MaterialIcons" style={{ color: "#579976", fontSize: 20, marginHorizontal: 5 }} /> */}
-                <Icon onPress={() => this.props.navigation.navigate("ExamReport", { exam_id: item.id, name:item.name_en, date:item.date, course:null })} active size={20} name='remove-red-eye' type="MaterialIcons" style={{ color: "#31314f", fontSize: 20 }} />
+                <Icon onPress={() => this.props.navigation.navigate("ExamReport", { exam_id: item.id, name:item.name_en, date:item.date, course:null,exam:item })} active size={20} name='remove-red-eye' type="MaterialIcons" style={{ color: "#31314f", fontSize: 20 }} />
             </View>
         </View>
     );
@@ -159,10 +160,14 @@ class Exam extends React.Component {
                             <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{i18n.t('Date')}</Text>
                         </View>
 
-                        <View style={{ width: '20%', flexDirection: 'row' }}>
+                        <View style={{  flexDirection: 'row',width:"20%" }}>
                             <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{i18n.t('Action')}</Text>
                         </View>
                     </View>
+                    {this.state.exams?.length==0&& <View style={{borderWidth:1,borderColor:"#579976",borderRadius:12,marginVertical:20,marginHorizontal:12,paddingHorizontal:12,paddingVertical:5,alignItems:"center"}}>
+                        <Image source={NoDocument} style={{width:90,height:90,tintColor:"#579976"}} />
+                        <Text >{i18n.t("No exams found")}</Text>
+                    </View>}
                     <FlatList
                         data={this.state.exams}
                         renderItem={this.renderItem}

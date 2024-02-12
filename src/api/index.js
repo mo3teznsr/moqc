@@ -1,9 +1,10 @@
 import { AsyncStorage } from 'react-native';
 import { Alert } from "react-native";
-const axios = require('axios');
+
+import axios from 'axios';
 var FormData = require('form-data');
 
-let api_call = async (path, method, body, headers) => {
+let api_call = async (path, method, body={}, headers) => {
   let apiRoot = "https://staging.moqc.ae/api/";
   // let apiRoot = "http://siktop.com/api/";
 
@@ -16,16 +17,19 @@ let api_call = async (path, method, body, headers) => {
   }
   console.log(config)
   var response = await axios(config)
-  .then(function (response) {
+  .then( (response)=> {
     return (response.data);
   })
-  .catch(function (error) {
+  .catch( (error)=> {
     console.log(error);
   });
   return response;
 }; 
 
-
+exports.getCourses=async(user)=>{
+  const res=await api_call("courses", "get" );
+  return res
+}
 
 exports.signup = async user => {
   console.log(user)
@@ -163,6 +167,17 @@ exports.getCourses = async (user) => {
   }
   let resp = await api_call("customer_service/student/"+user, "get", null, headers );
   return resp;
+};
+
+exports.getExamResults = async (id) => {
+  // console.log(post)
+  let token = await AsyncStorage.getItem("@moqc:token");
+  let headers = await{
+    "token": token,
+  }
+  let resp = await api_call("exam_results/"+id, "get", null, headers );
+  return resp
+ 
 };
 
 exports.getClasses = async (user) => {

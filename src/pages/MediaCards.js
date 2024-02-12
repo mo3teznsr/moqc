@@ -49,7 +49,7 @@ class MediaCards extends React.Component {
 
     getMediaCards = async () => {
         this.setState({ show_spinner: true })
-        const response = await Axios.get(`https://staging.moqc.ae/api/media_cards`);
+        const response = await axios.get(`https://staging.moqc.ae/api/media_cards`);
         this.setState({ show_spinner: false })
         if (response.status === 200) {
             this.setState({ mediaCards: response.data })

@@ -123,7 +123,7 @@ class Home extends React.Component {
     }
 }
 
-export default withTranslation()(Home)
+export default (Home)
 
 const styles = StyleSheet.create({
     wrapper: {

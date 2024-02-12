@@ -23,6 +23,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import CourseStudents from './CourseStudents';
 import i18n from '../i18n';
 import { Linking } from 'react-native'
+import axios from 'axios';
 
 
 
@@ -47,12 +48,12 @@ class CourseStudents1 extends React.Component {
 
     getCourses = async () => {
         
-        const response = await Axios.get("https://staging.moqc.ae/api/courses");
+        const response = await axiosios.get("https://staging.moqc.ae/api/courses");
         if (response.status === 200) {
             this.setState({ courses: response.data })
         }
 
-        const res = await Axios.get("https://staging.moqc.ae/api/notes");
+        const res = await axios.get("https://staging.moqc.ae/api/notes");
         if (res.status === 200) {
             this.setState({ notes: res.data })
         }
@@ -62,7 +63,7 @@ class CourseStudents1 extends React.Component {
     getStudents = async () => {
         var course_id = this.props.route.params.course_id
         console.log("courseee", course_id)
-        const response = await Axios.get(`https://staging.moqc.ae/api/course_students/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/course_students/${course_id}`);
         if (response.status === 200) {
             this.setState({ students: response.data })
         }

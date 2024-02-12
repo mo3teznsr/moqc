@@ -27,6 +27,7 @@ import i18n from '../i18n';
 import CountDown from 'react-native-countdown-component';
 import Sound from 'react-native-sound';
 import SideMenu from './components/sideMenu';
+import WebView from 'react-native-webview';
 
 
 class Home extends React.Component {
@@ -57,16 +58,32 @@ class Home extends React.Component {
             quranList: [],
             show_spinner: true,
             countDownSec: 0,
-            newsPoss:0
+            newsPoss:0,
+            home:null,
+            activeMessage:"",
+            message:"",
+            activeSlide:0
             // arabicDate: new Intl.DateTimeFormat('fr-FR-u-ca-islamicc', { day: 'numeric', month: 'long', weekday: 'long', year: 'numeric' }).format(Date.now())
         };
         this.getAdhanTime()
         this.getCityName();
         this.getAllNews();
+        axios.get("https://staging.moqc.ae/api/home").then((res) => {
+           console.log(res.data)
+            this.setState({home:res.data})
+            setInterval(()=>{
+                this.updateActiveSlide()
+            },5000)
+        })
         // this.checkAccess();
         this.checkLastLogin();
         this.getPodcast()
         
+    }
+
+    updateActiveSlide=()=>{
+        const next=this.state.activeSlide<this.state.home?.slides.length-1?this.state.activeSlide+1:0
+        this.setState({activeSlide:next})
     }
 
     componentDidMount() {
@@ -175,18 +192,18 @@ class Home extends React.Component {
     }
     getAllNews = () => {
         this.setState({ show_spinner: true })
-        API.news()
-            .then(resp => {
-                this.setState({ show_spinner: false })
-                this.setState({
-                    news: resp
-                })
-
+        axios.get("https://staging.moqc.ae/api/news").then(res=>{
+            this.setState({
+                news: res.data,
+                show_spinner: false
             })
-            .catch(err => {
-            //    console.log(err)
-                alert(err)
-            });
+        }).catch(e=>{
+            console.log(e)
+            
+        }).finally(()=>{
+            this.setState({ show_spinner: false })
+        })
+       
     }
     getAdhanTime = () => {
         const apiCallDate = new Date();
@@ -297,6 +314,29 @@ class Home extends React.Component {
         this.load_data();
         // this.registerForPushNotificationsAsync(); this._notificationSubscription =
         // Notifications.addListener(this._handleNotification);
+    }
+
+    renderMessage=(activeMessage)=>{
+        console.log('message',activeMessage,this.state.message)
+       
+        switch(activeMessage){
+            case "vision":
+                this.setState({message:this.state.home?.missionvisionmessage?.[`vision_message_${i18n.language=="en"?"english":"arabic"}`],activeMessage},)
+                return 
+            case "mission":
+                this.setState({message:this.state.home?.missionvisionmessage?.[`mission_message_${i18n.language=="en"?"english":"arabic"}`],activeMessage})
+                return 
+            case "quran":
+                this.setState({message:this.state.home?.quran_education_msg?.[`quran_education_message_${i18n.language=="en"?"english":"arabic"}`],activeMessage})
+                return 
+            case "strategy":
+                this.setState({message:this.state.home?.strategic_objective_msg?.['strategic_objective_message_arabic'],activeMessage})
+                return 
+            default:
+                
+                return 
+        }
+       
     }
     getDay = () => {
         var d = new Date();
@@ -414,18 +454,79 @@ class Home extends React.Component {
                     style={{
                         flex: 1,
                     }}>
-                    <Content>
-                        <ImageBackground
-                            source={require('../assets/header.png')}
+                    <ScrollView>
+                       
+                            <Image source={{url:`https://staging.moqc.ae/${this.state.home?.slides[this.state.activeSlide]?.path}`}} style={{width:Dimensions.get("window").width,height:Dimensions.get("window").width*5/16}}  />
+                            <View style={{minHeight:33,backgroundColor:"#fff0",}}>
+                                
+                                <WebView originWhitelist={['*']}
+                                source={{html:`<marquee direction="right" scrollamount="12"
+                                style="font-size:38px;direction:rtl;text-align:right;background:#fff0"
+                                >
+                        ${this.state.home?.slider_message[0]?.[`message_${i18n.language=='en'?'english':'arabic'}`]}
+                       </marquee>`}}
+                                  />
+                            </View>
+                            <ImageBackground
+                            source={ require('../assets/header.png')}
                             style={{
                                 height: 200,
-                                position: 'relative'
+                                position: 'relative',
+                                
+                                
                             }}>
-                            <View style={{ zIndex: 10, marginTop: 150, position: "absolute", justifyContent: "center", alignItems: "center", flexDirection: "row", margin: 10 }}>
-                                <ScrollView
-                                showsVerticalScrollIndicator={true}
-                                 ref={this.ref} horizontal={true}  showsHorizontalScrollIndicator={false}  >
-                              
+                            <View style={{ marginTop: 15,width:"100%", flexDirection: "row", justifyContent: "center",alignItems:"center" }}>
+                               
+
+                                <View style={{ padding: 15, textAlign: 'center', backgroundColor: '#fff', borderRadius: 20, borderWidth: 1, borderColor: "#E85C5D" }}>
+                                    <Text style={{textAlign:"center"}}>
+                                        {i18n.t(this.getDay().toLocaleUpperCase())}
+                                    </Text>
+                                    <Text style={{ fontWeight: 'bold', textAlign: "center" }}>{new Date().getDate()}</Text>
+                                    <Text style={{ color: '#E85C5D', textAlign: "center" }}>
+                                        {i18n.t(this.getMonth().toLocaleUpperCase())}
+                                    </Text>
+                                    <Text style={{ textAlign: "center" }}>{new Intl.DateTimeFormat(i18n.language+'-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long' }).format(Date.now())}</Text>
+                                    <Text style={{ fontWeight: 'bold', textAlign: "center" }}>{new Intl.DateTimeFormat(i18n.language+'-TN-u-ca-islamic', { year: 'numeric' }).format(Date.now())}</Text>
+
+                                </View>
+                                <View style={{  alignItems: 'baseline',paddingHorizontal:20 }}>
+                                <Text style={{  fontWeight: "bold", fontSize: 12 }}>
+                                    <Image style={{ height: 20, width: 20 }} source={require("../assets/compass_b.png")} />{i18n.t(this.state.city.toLocaleUpperCase())} - {new Date().getFullYear()}
+                                </Text>
+                                <View style={{alignItems:"flex-start"}}>
+                                    <Text style={{ marginVertical: 10, fontSize: 12, fontWeight: "bold"}}>
+                                        {i18n.t('Remaining Time for')}  {i18n.t(this.state.nextPrayer)}
+                                    </Text>
+                                    {/* <Text style={{ marginBottom: 10, fontSize: 12, fontWeight: "bold" }}>
+                                        {i18n.t(this.state.nextPrayer)}
+
+                                    </Text> */}
+                                    {/* <Text>{d}</Text> */}
+                                    {this.state.countDownSec ?
+                                        <CountDown
+                                            until={this.state.countDownSec}
+                                            onFinish={() => console.log('finsh')}
+                                            onPress={() => console.log('hello')}
+                                            size={16}
+                                           timeLabelStyle={{color:"#000",fontSize:15}}
+                                            timeLabels={ {d: i18n.t("Day"), h: i18n.t("Hour"), m:i18n.t("Minute"), s: i18n.t("Second")} }
+                                            digitStyle={{ backgroundColor: '#a18c63' }}
+                                            digitTxtStyle={{ color: '#fff' }}
+
+                                        />
+                                        : <Text></Text>}
+                                </View>
+                                </View>
+
+                                
+
+
+
+                            </View>
+                          
+                            <View style={{ zIndex: 10, justifyContent: "center",alignSelf:"center", alignItems: "center", flexDirection: "row", margin: 10}}>
+                               
                                     <View  style={{ marginVertical: 10, backgroundColor: "white", padding: 3, borderRadius: 20, marginRight: 3, marginLeft: 3 }}>
                                         <View style={{ justifyContent: "center", alignItems: "center", backgroundColor: "#F1F0EB", borderRadius: 20, paddingHorizontal: 5 ,paddingVertical:10}}>
                                             <Text style={{ fontWeight: "bold", fontSize: 14 }}>
@@ -532,59 +633,8 @@ class Home extends React.Component {
                                         </View>
                                     </View>
 
-                                </ScrollView>
+                              
                             </View>
-
-                            <View style={{ margin: 25, flexDirection: "row", justifyContent: "space-between",alignItems:"center" }}>
-                               
-
-                                <View style={{ padding: 15, textAlign: 'center', backgroundColor: '#fff', borderRadius: 20, borderWidth: 1, borderColor: "#E85C5D" }}>
-                                    <Text style={{textAlign:"center"}}>
-                                        {i18n.t(this.getDay().toLocaleUpperCase())}
-                                    </Text>
-                                    <Text style={{ fontWeight: 'bold', textAlign: "center" }}>{new Date().getDate()}</Text>
-                                    <Text style={{ color: '#E85C5D', textAlign: "center" }}>
-                                        {i18n.t(this.getMonth().toLocaleUpperCase())}
-                                    </Text>
-                                    <Text style={{ textAlign: "center" }}>{new Intl.DateTimeFormat(i18n.language+'-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long' }).format(Date.now())}</Text>
-                                    <Text style={{ fontWeight: 'bold', textAlign: "center" }}>{new Intl.DateTimeFormat(i18n.language+'-TN-u-ca-islamic', { year: 'numeric' }).format(Date.now())}</Text>
-
-                                </View>
-                                <View style={{ flex:1, alignItems: 'baseline',paddingHorizontal:20 }}>
-                                <Text style={{  fontWeight: "bold", fontSize: 12 }}>
-                                    <Image style={{ height: 20, width: 20 }} source={require("../assets/compass_b.png")} />{i18n.t(this.state.city.toLocaleUpperCase())} - {new Date().getFullYear()}
-                                </Text>
-                                <View style={{alignItems:"flex-start"}}>
-                                    <Text style={{ marginVertical: 10, fontSize: 12, fontWeight: "bold"}}>
-                                        {i18n.t('Remaining Time for')}  {i18n.t(this.state.nextPrayer)}
-                                    </Text>
-                                    {/* <Text style={{ marginBottom: 10, fontSize: 12, fontWeight: "bold" }}>
-                                        {i18n.t(this.state.nextPrayer)}
-
-                                    </Text> */}
-                                    {/* <Text>{d}</Text> */}
-                                    {this.state.countDownSec ?
-                                        <CountDown
-                                            until={this.state.countDownSec}
-                                            onFinish={() => console.log('finsh')}
-                                            onPress={() => console.log('hello')}
-                                            size={16}
-                                           timeLabelStyle={{color:"#000",fontSize:15}}
-                                            timeLabels={ {d: i18n.t("Day"), h: i18n.t("Hour"), m:i18n.t("Minute"), s: i18n.t("Second")} }
-                                            digitStyle={{ backgroundColor: '#a18c63' }}
-                                            digitTxtStyle={{ color: '#fff' }}
-
-                                        />
-                                        : <Text></Text>}
-                                </View>
-                                </View>
-
-                                
-
-
-
-                            </View>
-
                         </ImageBackground>
 
                         {/* <View style={{
@@ -603,7 +653,7 @@ class Home extends React.Component {
                         </View> */}
 
 
-                        <View style={{ zIndex: 11, margin: 10, marginTop: 120, position: "relative" }}>
+                        <View style={{ zIndex: 11, margin: 10, marginTop: 100, position: "relative" }}>
                             <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
                                 <Text style={styles.heading}>{i18n.t('MOQC Center News')}</Text>
                                 <TouchableOpacity onPress={() => this.props.navigation.navigate("AllNews")}
@@ -615,13 +665,13 @@ class Home extends React.Component {
                                        // console.log(this.scrollView)
                                        this.scrollView.scrollTo({x:this.state.newsPoss-200})
                                     }}>
-                                         <Icon style={{ fontSize: 14,color:"#000" }} type="AntDesign" name={i18n.language=='ar'?"right":"left"} />
+                                         <Icon style={{ fontSize: 14,color:"#000" }} type="AntDesign" name={i18n.language==='en'?"left":"right"} />
                                     </Button>:<Text></Text>}
                                      <Button style={{width:40,height:40,borderRadius:40,position:"absolute",top:"50%",end:0,zIndex:10,backgroundColor:"#b2b1b6"}} onPress={()=>{
                                        // console.log(this.scrollView)
                                        this.scrollView.scrollTo({x:this.state.newsPoss+200})
                                     }}>
-                                         <Icon style={{ fontSize: 14,color:"#000" }} type="AntDesign" name={i18n.language=='ar'?"left":"right"} />
+                                         <Icon style={{ fontSize: 14,color:"#000" }} type="AntDesign" name={i18n.language=='en'?"right":"left"} />
                                     </Button>
                             {this.state.show_spinner ? <ActivityIndicator size="large" /> :
                                 <ScrollView onScroll={(event)=>{
@@ -689,6 +739,8 @@ class Home extends React.Component {
                                         </Button>
 
                               </View> */}
+
+
                         </View>
 
 
@@ -736,7 +788,7 @@ class Home extends React.Component {
                             }
                         </View> */}
 
-                        <View style={{ margin: 10 }}>
+                        {/* <View style={{ margin: 10 }}>
                             <Text style={styles.heading}>{i18n.t('Recent Podcasts')}</Text>
                             {this.state.show_spinner ? <ActivityIndicator size="large" /> :
                                 <FlatList
@@ -746,8 +798,44 @@ class Home extends React.Component {
                                     keyExtractor={item => item.id}
                                 />
                             }
-                        </View>
-                    </Content>
+                        </View> */}
+                         
+                       
+                       
+                        {this.state.home&&<View>
+                            <View style={{flexDirection:"row",marginTop:10,justifyContent:"space-between"}}>
+                              
+                                <Pressable onPress={()=>{
+                               this.renderMessage("vision")
+                            }}>
+                                    <Image source={{uri:`https://staging.moqc.ae/${this.state.home?.missionvision?.['vision_slide_'+i18n.language]}`}} style={{height:120,width:80,objectFit:"contain",opacity:this.state.activeMessage==="vision"?1:0.5}}  />
+                                </Pressable>
+                                <Pressable onPress={()=>{this.renderMessage("mission")}}>
+                                    <Image source={{uri:`https://staging.moqc.ae/${this.state.home?.missionvision?.['mission_slide_'+i18n.language]}`}} style={{height:120,width:80,opacity:this.state.activeMessage==="mission"?1:0.5}}  />
+                                </Pressable>
+                                <Pressable onPress={()=>{this.renderMessage("strategy")}}>
+                                    <Image source={{uri:`https://staging.moqc.ae/${this.state.home?.strategic_objective_img?.['strategic_objective_slide_'+i18n.language]}`}} style={{height:120,width:80,objectFit:"contain",opacity:this.state.activeMessage==="strategy"?1:0.5}} />
+                                </Pressable>
+                                <Pressable onPress={()=>{this.renderMessage("quran")}}>
+                                    <Image source={{uri:`https://staging.moqc.ae/${this.state.home?.quran_education_img?.['quran_education_slide_'+i18n.language]}`}} style={{height:120,width:80,opacity:this.state.activeMessage==="quran"?1:0.7}}  />
+                                </Pressable>
+
+                            </View>
+                           
+                            <View style={{minHeight:100,textAlign:"right",direction:"rtl",margin:10,marginBottom:15}}> 
+                           
+                            <WebView
+                           containerStyle={{textAlign:"right",direction:"rtl",fontSize:16,borderWidth:this.state.message?1:0,borderRadius:12,padding:5,borderColor:"#eeeeee"}}
+        originWhitelist={['*']}
+        source={{ html:`<div style="text-align:right;diection:rtl !important;font-size:22px">
+        <style>ul{direction:rtl; font-size:22px;} p,li,strong{font-size:32px !important;font-weight:bold;} </style>
+         ${this.state.message} </div>` }}
+      />
+
+     
+                            </View>
+                            </View>}
+                    </ScrollView>
                 </ImageBackground>
                 {/* <Footer location={"home"} navigation={this.props.navigation}/> */}
             </Container>

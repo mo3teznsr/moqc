@@ -155,7 +155,7 @@ class Team1 extends React.Component {
         }))
         // body.append("attachment", this.state.attachment)
 
-        const response = Axios.post(`https://staging.moqc.ae/api/student_file_upload`, body)
+        const response = axios.post(`https://staging.moqc.ae/api/student_file_upload`, body)
         if (response.status === 200) {
             this.setState({ showSpinner: false })
             this.getStudentProfile()
@@ -173,7 +173,7 @@ class Team1 extends React.Component {
         body.append("profile_picture", this.state.newMemberPic)
         body.append("password", this.state.password)
 
-        const response = await Axios.post(`https://staging.moqc.ae/api/addTeamMemeber`,
+        const response = await axios.post(`https://staging.moqc.ae/api/addTeamMemeber`,
             body,
             {
                 headers: { "token": token }

@@ -21,12 +21,13 @@ import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Ite
 
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
-import Axios from 'axios'
+
 
 import RNFetchBlob from 'rn-fetch-blob'
 import Toast from 'react-native-simple-toast';
 import i18n from '../i18n';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import axios from 'axios';
 
 
 const data = [
@@ -68,7 +69,7 @@ class TeamPermissions extends React.Component {
     getPermissions = async () => {
         this.setState({ show_spinner: true })
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/permissions`);
+        const response = await axios.get(`https://staging.moqc.ae/api/permissions`);
         this.setState({ show_spinner: false })
         if (response.status === 200) {
             this.setState({
@@ -83,7 +84,7 @@ class TeamPermissions extends React.Component {
         this.setState({ show_spinner: true })
         var team_id = this.props.route.params.team_id
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.post(`https://staging.moqc.ae/api/profile/${team_id}`, '',
+        const response = await axios.post(`https://staging.moqc.ae/api/profile/${team_id}`, '',
             {
                 headers: { "token": token }
             });
@@ -125,7 +126,7 @@ class TeamPermissions extends React.Component {
     getSelectedValue(permission) {
         for (let [x, amount] of Object.entries(this.state.pageAccess)) {
             if (x == permission.name) {
-                return amount[0]
+                return amount?.[0]
             }
         }
     }
@@ -137,7 +138,7 @@ class TeamPermissions extends React.Component {
 
         var team_id = this.props.route.params.team_id
         body.append("page_access", JSON.stringify(this.state.pageAccess))
-        const response = await Axios.post(`https://staging.moqc.ae/api/page_access/${team_id}`,
+        const response = await axios.post(`https://staging.moqc.ae/api/page_access/${team_id}`,
             body,
             {
                 headers: { "token": token }

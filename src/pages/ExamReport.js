@@ -13,7 +13,8 @@ import {
     Pressable,
     Alert,
     FlatList,
-    ActivityIndicator
+    ActivityIndicator,
+    Linking
 } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker, Form } from 'native-base';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -24,6 +25,7 @@ import HeaderTop from "./Header";
 import { open } from '../store';
 import { Backdrop } from 'react-native-backdrop';
 import i18n from '../i18n';
+import axios from 'axios';
 
 
 class ExamReport extends React.Component {
@@ -45,7 +47,7 @@ class ExamReport extends React.Component {
     getResult = async () => {
         open.next(true)
         var exam_id = this.props.route.params.exam_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/results_view/${exam_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/results_view/${exam_id}`);
         if (response.status === 200) {
             console.log(response.data,exam_id)
             this.setState({ result: response.data })
@@ -58,14 +60,35 @@ class ExamReport extends React.Component {
         var body = new FormData()
         body.append("id", exam_id)
         body.append("students", JSON.stringify(this.state.result))
-        const response = await Axios.post(`https://staging.moqc.ae/api/results_update/${exam_id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/results_update/${exam_id}`, body);
     }
 
     renderItem = ({ item }) => (
         <View
-            style={{ borderBottomWidth: 1, borderBottomColor: '#D5D5D5',alignItems:"center", padding: 2, margin: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flex: 2 }}>
-                <Text>{item.first_name + ' ' + item.last_name}</Text>
+            style={{ borderWidth: 1, borderColor: '#D5D5D5', paddingHorizontal: 12, margin: 10,paddingVertical:6,borderRadius:12 }}>
+            <View >
+                <Text style={styles.label}>{i18n.t("Name")}</Text>
+                <Text style={styles.label}>{item.first_name + ' ' + item.last_name}</Text>
+            </View>
+            <View>
+                <View style={styles.exam_item}>
+                <View >
+                <Text style={styles.label}>{i18n.t("Result")}</Text>
+                <Text style={styles.label}>{item.result||'-'}</Text>
+            </View>
+
+            <View >
+                <Text style={styles.label} >{i18n.t("Exam Report")}</Text>
+                {item.report?<Icon onPress={() =>  Linking.openURL("https://staging.moqc.ae/assets/uploads/"+item.report)} active size={20} name='file-download' type="MaterialIcons" style={{ color: "#31314f", fontSize: 20 }} />:<Text style={styles.label}>{'-'}</Text>}
+            </View>
+
+                </View>
+                <View >
+                <Text style={styles.label} >{i18n.t("Notes")}</Text>
+                <Text style={styles.label}>{item.note||'-'}</Text>
+            </View>
+           
+
             </View>
             {/* <Backdrop
                 visible={open}
@@ -74,7 +97,7 @@ class ExamReport extends React.Component {
                     <ActivityIndicator />
                 </View>
             </Backdrop> */}
-            <View style={{ flex: 1 }}>
+            {/* <View style={{ flex: 1 }}>
                 <TextInput style={{ padding: 10, height: 40, borderWidth: 1, borderRadius: 10 }}
                     value={item.result}
                     onChangeText={(e) => {
@@ -82,7 +105,7 @@ class ExamReport extends React.Component {
                         this.setState({ result: this.state.result })
                     }}>
                 </TextInput>
-            </View>
+            </View> */}
         </View>
 
     );
@@ -100,29 +123,21 @@ class ExamReport extends React.Component {
                         }}>
 
                         <View style={{ margin: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ marginVertical: 5, fontSize: 16 }}>{i18n.t('Exam ')}: {this.props.route.params.name}</Text>
+                            <Text style={{ marginVertical: 5, fontSize: 16 }}>{i18n.t('Exam')}: {this.props.route.params?.exam?.[`name_${i18n.language}`]}</Text>
                             <Text style={{ marginVertical: 5, fontSize: 16 }}>{i18n.t('Date')} : {this.props.route.params.date}</Text>
                         </View>
 
-                        <View
-                            style={{ borderBottomWidth: 1, borderBottomColor: '#D5D5D5', padding: 10, backgroundColor: '#D5D5D5', flexDirection: 'row',alignItems:"center", justifyContent: 'space-between' }}>
-                            <View style={{ flex: 2,}}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{i18n.t('Name')}</Text>
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{i18n.t('Result')}</Text>
-                            </View>
-                        </View>
+                        
                         <FlatList
                             data={this.state.result}
                             renderItem={this.renderItem}
                             keyExtractor={item => item.id}
                         />
 
-                        <Pressable style={{ margin: 10, backgroundColor: '#579976', padding: 10, justifyContent: 'center', alignItems: 'center', width: '20%', borderWidth: 1, borderRadius: 10 }}
+                        {/* <Pressable style={{ margin: 10, backgroundColor: '#579976', padding: 10, justifyContent: 'center', alignItems: 'center', width: '20%', borderWidth: 1, borderRadius: 10 }}
                             onPress={() => this.updateResult()}>
                             <Text style={{ fontWeight: 'bold', color: '#fff', fontSize: 15 }} >{i18n.t('Save')}</Text>
-                        </Pressable>
+                        </Pressable> */}
 
                     </ImageBackground>
                 </View>
@@ -136,6 +151,14 @@ export default ExamReport
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1
+    },
+    label:{
+        textAlign:"left"
+    },
+    exam_item:{
+        flexDirection:"row",
+        justifyContent:"space-around",
+        alignItems:"center"
     },
     sectionWrapper: {
         padding: 20

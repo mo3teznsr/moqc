@@ -65,7 +65,7 @@ class Register extends Component {
         let is_student = await AsyncStorage.getItem("is_student")
         console.log("is_student", is_student)
         if (token) {
-            Axios.defaults.headers.common['token'] = token
+            axios.defaults.headers.common['token'] = token
             if (is_student == 0) {
                 this.props.navigation.navigate("Home")
             }
@@ -87,7 +87,7 @@ class Register extends Component {
         await AsyncStorage.setItem("role", info.result.role)
         await AsyncStorage.setItem("is_student", JSON.stringify(info.result.is_student))
 
-        Axios.defaults.headers.common['token'] = info.result.token
+        axios.defaults.headers.common['token'] = info.result.token
         RNRestart.Restart();
         if (info.result.is_student == 1) {
             await AsyncStorage.setItem("class_id", info.result.user.student_class)
@@ -109,7 +109,7 @@ class Register extends Component {
         formData.append('password', this.state.password);
         formData.append("email",this.state.email)
 
-       var resp=await Axios.post('https://staging.moqc.ae/api/register',formData)
+       var resp=await axios.post('https://staging.moqc.ae/api/register',formData)
             .then(res => {
                 console.log(res.data)
                 let resp=res.data

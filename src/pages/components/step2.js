@@ -4,9 +4,10 @@ import { Picker, Spinner } from "native-base";
 import React, {Component, useEffect, useState} from "react";
 import { Image, Text, TouchableOpacity, View ,TextInput,StyleSheet, Pressable, Modal, Button} from "react-native";
 import Select from "./select";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
 import moment from 'moment';
 import { withTranslation } from "react-i18next";
+import i18n from "../../i18n";
 
 const Step2=(props)=>{
 
@@ -52,7 +53,7 @@ setYears(list2)
 },[])
 const {t, i18n} = props;
 
-    return ( <View>
+    return ( <View style={{flex:1}}>
    
 
       <Text style={{textAlign:"center",marginVertical:15,fontSize:25,fontWeight:"600"}}>{t('Personal Information')}</Text>
@@ -113,8 +114,9 @@ const {t, i18n} = props;
       onSelect={(item)=>{
         setShowMonth(false)
         setDOB({...dob,month:item})
-        props.update({months:item,dob:props.data.year+'-'+item+'-'+props.data.day})
-        console.log(item)}}
+        props.update({month:item,dob:props.data.year+'-'+item+'-'+props.data.day})
+        
+        console.log(props.data.year+'-'+item+'-'+props.data.day)}}
       render={ 'name'}
       close={()=>setShowMonth(false)} />
         </View>
@@ -131,6 +133,7 @@ const {t, i18n} = props;
         setShowYears(false)
         setDOB({...dob,year:item})
         props.update({year:item,dob:item+'-'+props.data.month+'-'+props.data.day})
+        console.log(item+'-'+props.data.month+'-'+props.data.day)
         console.log(item)}}
       render={ 'name'}
       close={()=>setShowYears(false)} />
@@ -286,7 +289,7 @@ const {t, i18n} = props;
 export default  withTranslation()(Step2);
 
 const styles=StyleSheet.create({
-    label:{marginHorizontal:10,fontSize:22,fontWeight:'500'},
+    label:{marginHorizontal:10,fontSize:16,fontWeight:'500',textAlign:i18n.language==="en"?"left": "right"},
     error:{marginHorizontal:10,fontSize:14,color:"#e41e3f",marginBottom:10},
-    input:{borderBottomWidth:1,paddingHorizontal:15,marginBottom:10,color:"#000"}
+    input:{borderWidth:1,paddingHorizontal:15,marginBottom:10,borderColor:"#999",borderRadius:12,paddingVertical:10}
 })

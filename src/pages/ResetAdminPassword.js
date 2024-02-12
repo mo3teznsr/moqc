@@ -26,7 +26,7 @@ import DropShadow from "react-native-drop-shadow";
 import Footer from "./Footer";
 import HeaderTop from "./Header";
 import API from "../api";
-import Axios from 'axios'
+import axios from 'axios'
 import DocumentPicker from "react-native-document-picker";
 import RNFetchBlob from 'rn-fetch-blob'
 import Toast from 'react-native-simple-toast';
@@ -48,7 +48,7 @@ class ResetAdminPassword extends React.Component {
         let body = new FormData()
 
         body.append("password", this.state.password)
-        const response = await Axios.post(`https://staging.moqc.ae/api/editProfile`,
+        const response = await axios.post(`https://staging.moqc.ae/api/editProfile`,
             body,
             {
                 headers: { "token": token }

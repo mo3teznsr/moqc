@@ -4,9 +4,10 @@ import { Picker, Spinner } from "native-base";
 import React, {Component, useEffect, useState} from "react";
 import { Image, Text, TouchableOpacity, View ,TextInput,StyleSheet, Pressable, Modal, Button} from "react-native";
 import Select from "./select";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
 import moment from 'moment';
 import { withTranslation } from "react-i18next";
+import i18n from "../../i18n";
 
 const Step3=(props)=>{
 
@@ -143,7 +144,7 @@ const {t, i18n} = props;
 export default  withTranslation()(Step3);
 
 const styles=StyleSheet.create({
-  label:{marginHorizontal:10,fontSize:22,fontWeight:'500'},
+  label:{marginHorizontal:10,fontSize:16,fontWeight:'500',textAlign:i18n.language==="en"?"left": "right"},
   error:{marginHorizontal:10,fontSize:14,color:"#e41e3f",marginBottom:10},
     input:{borderBottomWidth:1,paddingHorizontal:15,marginBottom:10,color:"#000"}
 })

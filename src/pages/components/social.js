@@ -14,17 +14,16 @@ const open=(link)=>
   
    <Pressable  onPress={()=>open("https://twitter.com/MOQCae")}>
     <Image
-        source={require('../../assets/socialicons/twitter.png')}
+        source={require('../../assets/x.png')}
         style={{
-            top:0,
-            left:0,
+           
             height: 35,
             width: 35,
             
         }} /></Pressable>
-        <Pressable onPress={()=>open("https://www.facebook.com/moqc.ae")}>
+        <Pressable onPress={()=>open("https://www.threads.net/@moqc.ae")}>
     <Image
-        source={require('../../assets/socialicons/fb.png')}
+        source={require('../../assets/threads.png')}
         style={{
             height: 35,
             width: 35,
@@ -38,7 +37,7 @@ const open=(link)=>
             width: 35,
            
         }} /></Pressable>
-         <Pressable onPress={()=>open("https://telegram.org/moqc.ae")}>
+         <Pressable onPress={()=>open("https://twitter.com/MOQCae")}>
     <Image
         source={require('../../assets/socialicons/telegram.png')}
         style={{
@@ -54,7 +53,7 @@ const open=(link)=>
             width: 35,
             
         }} /></Pressable>
-         <Pressable onPress={()=>open("https://www.linkedin.com/in/nadalfalasi")}>
+         <Pressable onPress={()=>open("https://www.linkedin.com/company/moqcae/")}>
     <Image
         source={require('../../assets/socialicons/linkedin.png')}
         style={{

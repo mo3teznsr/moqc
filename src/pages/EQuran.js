@@ -37,6 +37,8 @@ import Sound from 'react-native-sound';
 // import TrackPlayer from 'react-native-track-player';
 Sound.setCategory('Playback');
 import Video from 'react-native-video';
+import axios from 'axios';
+import SideMenu from './components/sideMenu';
 
 class EQuran extends React.Component {
 
@@ -58,7 +60,8 @@ class EQuran extends React.Component {
             language: '',
             link: '',
             show_spinner: true,
-            showVideoPlayer: false
+            showVideoPlayer: false,
+            section_id:1
 
         };
         this.getLanguage()
@@ -77,7 +80,7 @@ class EQuran extends React.Component {
 
     getQuranList = async () => {
         this.setState({ show_spinner: true })
-        const response = await Axios.get(`https://staging.moqc.ae/api/equran_list`);
+        const response = await axios.get(`https://staging.moqc.ae/api/equran_list`);
         this.setState({ show_spinner: false })
         if (response.status === 200) {
             this.setState({ quranList: response.data })
@@ -90,7 +93,7 @@ class EQuran extends React.Component {
         body.append("name_ar", this.state.name_ar)
         body.append("attachment", this.state.attachment)
         var course_id = this.props.route.params.course_id
-        const response = await Axios.post(`https://staging.moqc.ae/api/eleason_create/${course_id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/eleason_create/${course_id}`, body);
 
         if (response.status === 200) {
             this.setState({ createModal: false })
@@ -105,7 +108,7 @@ class EQuran extends React.Component {
         body.append("name_en", this.state.updatename_en)
         body.append("name_ar", this.state.updatename_ar)
         body.append("attachment", this.state.attachment)
-        const response = await Axios.post(`https://staging.moqc.ae/api/eleason_update/${this.state.updateLessonItem.id}`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/eleason_update/${this.state.updateLessonItem.id}`, body);
 
         if (response.status === 200) {
             this.setState({ updateModal: false })
@@ -261,18 +264,18 @@ class EQuran extends React.Component {
 
 
     renderItem = ({ item }) => (
-        <View style={{ borderBottomWidth: 1, borderBottomColor: '#D5D5D5', paddingHorizontal: 20, paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View style={{ flex: 1 }}>
+        <View style={{ borderBottomWidth: 1, borderBottomColor: '#D5D5D5', marginHorizontal: 20, paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
+            {/* <View style={{ flex: 1 }}>
                 <Text>{item.id}</Text>
-            </View>
+            </View> */}
             <View style={{ flex: 1 }}>
-                <Text>{this.state.language == 'en' ? item.name_en : item.name_ar}</Text>
+                <Text style={{textAlign:"left"}}>{this.state.language == 'en' ? item.name_en : item.name_ar}</Text>
             </View>
 
-            <View style={{ flex: 1, flexDirection: 'row', marginHorizontal: 10 }}>
-                <Icon onPress={() => this.historyDownload(item.pdf, item.name_en)} active size={30} name='picture-as-pdf' type="MaterialIcons" style={{ color: "#31314f", fontSize: 25 }} />
-                <Icon onPress={() => this.playAudio(item.audio)} active size={30} name='mic' type="MaterialIcons" style={{ color: "#579976", fontSize: 25, marginHorizontal: 5 }} />
-                <Icon onPress={() => this.playVideo(item.video)} active size={30} name='ondemand-video' type="MaterialIcons" style={{ color: "red", fontSize: 25 }} />
+            <View style={{ flexDirection: 'row', marginHorizontal: 10 }}>
+                {item.pdf&&<Icon onPress={() => this.historyDownload(item.pdf, item.name_en)} active size={30} name='picture-as-pdf' type="MaterialIcons" style={{ color: "#31314f", fontSize: 25 }} />}
+                {item.audio&&<Icon onPress={() => this.playAudio(item.audio)} active size={30} name='mic' type="MaterialIcons" style={{ color: "#579976", fontSize: 25, marginHorizontal: 5 }} />}
+                {Boolean(item.video)&&<Icon onPress={() => this.playVideo(item.video)} active size={30} name='ondemand-video' type="MaterialIcons" style={{ color: "red", fontSize: 25 }} />}
             </View>
         </View>
     );
@@ -281,8 +284,8 @@ class EQuran extends React.Component {
     render() {
 
         return (
-            <Container>
-                <ScrollView>
+            <Container style={{flex:1}}>
+               
                     <View style={{ flex: 10 }}>
                         <HeaderTop pagename={i18n.t("EQURAN")} navigation={this.props.navigation} />
                         <ImageBackground
@@ -292,12 +295,17 @@ class EQuran extends React.Component {
                                 flex: 10,
                             }}>
 
+                                <View style={{  flexDirection: 'row',backgroundColor:"#f6f6f6",borderRadius:12,paddingHorizontal:12,paddingVertical:8,margin:10, alignItems: 'center', marginTop: 10 }}>
+                                    <Pressable onPress={()=>this.setState({section_id:2})} style={{flex:1,borderRadius:12,backgroundColor:this.state.section_id==2?"#579976":"#f6f6f6",padding:10}}><Text style={{textAlign:"center",color:this.state.section_id==2?"#f6f6f6":"#579976"}}  >القران الكريم</Text></Pressable>
+                                    <Pressable  onPress={()=>this.setState({section_id:1})} style={{flex:1,borderRadius:12,backgroundColor:this.state.section_id==1?"#579976":"#f6f6f6",padding:10}}><Text style={{textAlign:"center",color:this.state.section_id==1?"#f6f6f6":"#579976"}}>تحفة الاطفال</Text></Pressable>
+                                </View>
+
                             {/* <View style={{margin:10}}>
                             <TouchableOpacity onPress={() => this.setState({ createModal: true })}>
                                 <Icon active size={20} name='add-circle' type="MaterialIcons" style={{ color: "#579976", fontSize: 40 }} />
                             </TouchableOpacity>
                         </View> */}
-                            <View style={{ margin: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
+                            {/* <View style={{ margin: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
                                 <View style={{ borderColor: '#D5D5D5', borderWidth: 1, borderRadius: 15, padding: 10, height: 120, width: 100, justifyContent: 'center', alignItems: 'center' }}>
                                     <Icon active size={20} name='picture-as-pdf' type="MaterialIcons" style={{ color: "#E34752", fontSize: 50 }} />
                                     <Text style={{ fontWeight: 'bold', color: '#31314F', fontSize: 16 }}>{i18n.t('PDF')}</Text>
@@ -310,7 +318,7 @@ class EQuran extends React.Component {
                                     <Icon active size={50} name='ondemand-video' type="MaterialIcons" style={{ color: "#E34752", fontSize: 50 }} />
                                     <Text style={{ fontWeight: 'bold', color: '#31314F', fontSize: 16 }}>{i18n.t('Video')}</Text>
                                 </View>
-                            </View>
+                            </View> */}
 
 
                             {this.state.showVideoPlayer ?
@@ -329,7 +337,7 @@ class EQuran extends React.Component {
                             {this.state.show_spinner ? <ActivityIndicator size='large' /> :
                                 <View style={{ margin: 20, borderWidth: 1, borderRadius: 20, borderColor: '#D5D5D5', minHeight: 430 }}>
                                     <FlatList
-                                        data={this.state.quranList}
+                                        data={this.state.quranList.filter(item=>item.section_id==this.state.section_id)}
                                         renderItem={this.renderItem}
                                         keyExtractor={item => item.id}
                                     />
@@ -444,7 +452,9 @@ class EQuran extends React.Component {
 
                         </ImageBackground>
                     </View>
-                </ScrollView>
+                    <SideMenu />
+                
+               
             </Container>
         )
     }
@@ -541,5 +551,9 @@ const styles = StyleSheet.create({
         bottom: 0,
         right: 0,
     },
+
+    tabItem:{
+        
+    }
 
 });

@@ -42,7 +42,7 @@ export default class Media extends Component {
 
                 {this.state.network ?
 
-                    <WebView ref={WEBVIEW_REF => (WebViewRef = WEBVIEW_REF)} source={{ uri: 'https://staging.moqc.ae/media' }} 
+                    <WebView ref={WEBVIEW_REF => (WebViewRef = WEBVIEW_REF)} source={{ uri: 'https://staging.moqc.ae/media/' }} 
                     allowsInlineMediaPlayback="true"
                     originWhitelist={["*"]}
                     useWebKit={true}

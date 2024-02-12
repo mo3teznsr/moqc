@@ -62,19 +62,19 @@ class ITList extends React.Component {
                     style={{
                         flex: 10,
                     }}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap' }}>
-
+                    <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap' ,padding:20}}>
+                    <TouchableOpacity style={{ borderColor: "#C8DACE", height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
+                        onPress={()=>this.props.navigation.navigate("ItApprovedStudents")}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('Last Stage Approval')}</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity style={{ borderColor: "#C8DACE", margin: 20, height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
                             onPress={() => this.props.navigation.navigate("ItStudent")}>
                             <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('View All Students')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ borderColor: "#C8DACE", height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
-                        onPress={()=>this.props.navigation.navigate("ItApprovedStudents")}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('Approved Students')}</Text>
-                        </TouchableOpacity>
+                        
                         <TouchableOpacity style={{ borderColor: "#C8DACE", margin: 20, height: 200, width: 180, borderRadius: 30, borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}
                             onPress={() => this.props.navigation.navigate("CreateEmail")}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('Create Emails')}</Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{i18n.t('Email')}</Text>
                         </TouchableOpacity>
                     </View>
 

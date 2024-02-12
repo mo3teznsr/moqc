@@ -29,6 +29,7 @@ import HeaderTop from "./Header";
 import API from "../api";
 var FormData = require('form-data');
 import { WebView } from 'react-native-webview';
+import axios from 'axios';
 
 
 const data = [
@@ -76,7 +77,7 @@ class StudentsTeacher extends React.Component {
 
     getClasses = async () => {
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/classes`,
+        const response = await axios.get(`https://staging.moqc.ae/api/classes`,
             {
                 headers: { "token": token }
             });

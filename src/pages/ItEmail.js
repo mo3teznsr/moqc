@@ -17,7 +17,6 @@ import {
     Alert
 } from 'react-native';
 import API from "../api/";
-const Axios = require('axios');
 
 import CheckBox from 'react-native-check-box'
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker, Form } from 'native-base';
@@ -26,6 +25,7 @@ import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
 import HeaderTop from './Header'
 import { ActivityIndicator } from 'react-native-paper';
+import axios from 'axios';
 
 
 class Email extends React.Component {
@@ -56,7 +56,7 @@ class Email extends React.Component {
     getEmailDetails = async () => {
         this.setState({ show_spinner: true })
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/microsoft_emails`, {
+        const response = await axios.get(`https://staging.moqc.ae/api/microsoft_emails`, {
             headers: { "token": token }
         });
         this.setState({ show_spinner: false })
@@ -71,7 +71,7 @@ class Email extends React.Component {
         var body = new FormData()
         body.append("email", this.state.email)
         body.append("password", this.state.password)
-        const response = await Axios.post(`https://staging.moqc.ae/api/microsoft_email_create`, body,
+        const response = await axios.post(`https://staging.moqc.ae/api/microsoft_email_create`, body,
             {
                 headers: { "token": token }
             });
@@ -88,7 +88,7 @@ class Email extends React.Component {
         var body = new FormData()
         body.append("email", this.state.updatename)
         body.append("password", this.state.updatepassword)
-        const response = await Axios.post(`https://staging.moqc.ae/api/microsoft_email_update/${this.state.updateid}`, body,
+        const response = await axios.post(`https://staging.moqc.ae/api/microsoft_email_update/${this.state.updateid}`, body,
             {
                 headers: { "token": token }
             });
@@ -107,7 +107,7 @@ class Email extends React.Component {
 
     async deleteEmail(id) {
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.delete(`https://staging.moqc.ae/api/microsoft_email_delete/${id}`,
+        const response = await axios.delete(`https://staging.moqc.ae/api/microsoft_email_delete/${id}`,
             {
                 headers: { "token": token }
             });

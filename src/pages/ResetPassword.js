@@ -31,6 +31,7 @@ import DocumentPicker from "react-native-document-picker";
 import RNFetchBlob from 'rn-fetch-blob'
 import Toast from 'react-native-simple-toast';
 import i18n from '../i18n';
+import axios from 'axios';
 
 
 class ResetPassword extends React.Component {
@@ -48,7 +49,7 @@ class ResetPassword extends React.Component {
         let body = new FormData()
         
         body.append("password", this.state.password)
-        const response = await Axios.post(`https://staging.moqc.ae/api/student_password_rest`,
+        const response = await axios.post(`https://staging.moqc.ae/api/student_password_rest`,
             body,
             {
                 headers: { "token": token }

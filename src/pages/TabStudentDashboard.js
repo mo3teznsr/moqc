@@ -23,7 +23,7 @@ function TabStudentDashboard(props) {
             tabBarLabelStyle: { fontSize: 15, color: '#fff' },
             tabBarStyle: { backgroundColor: '#579976' },
         }}>
-            <Tab.Screen name={i18n.t("E-Lesson")} component={StudentLesson} initialParams={{ course_id: temp }} />
+            <Tab.Screen name={i18n.t("E-Lessons")} component={StudentLesson} initialParams={{ course_id: temp }} />
             <Tab.Screen name={i18n.t("Attendance")} component={StudentAttendance} initialParams={{ course_id: temp }} />
             <Tab.Screen name={i18n.t("Exam")} component={StudentExam} initialParams={{ course_id: temp }} />
         </Tab.Navigator>

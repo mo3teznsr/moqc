@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 import { Image, I18nManager, View, TouchableOpacity } from 'react-native'
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Picker } from 'native-base';
 
-import DropShadow from "react-native-drop-shadow";
 import { AsyncStorage } from 'react-native';
 import { Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
 import RNRestart from 'react-native-restart';
@@ -71,7 +70,7 @@ class HeaderTop extends Component {
                             :
                             <View></View>
                     }
-                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => this.props.navigation.navigate("Dashboard")}>
+                    <TouchableOpacity style={{ paddingHorizontal: 5 }} onPress={() => this.props.navigation.navigate("Home")}>
                         <Image source={require('../assets/moqc.png')} style={{ width: 35, height: 35, borderRadius: 40, borderWidth: 1, borderColor: "#e3e3e3" }} ></Image>
                     </TouchableOpacity>
                 </Left>
@@ -81,7 +80,7 @@ class HeaderTop extends Component {
                 </Body>
 
                 <Right style={{ flexDirection: "row", alignItems: "center" }} >
-                    <TouchableOpacity onPress={async()=>{
+                    {/* <TouchableOpacity onPress={async()=>{
                         var lang=i18n.language=="ar"?"en":"ar"
                          await AsyncStorage.setItem('@moqc:language', lang);
                          i18n
@@ -94,10 +93,10 @@ class HeaderTop extends Component {
                              });
                     }}>
                         <Image source={i18n.language=='ar'? require("../assets/uk.png"):require("../assets/ar.png")} style={{width:25,height:25,marginHorizontal:5}} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ backgroundColor: '#fff', borderRadius: 50 }} onPress={() => this.props.navigation.navigate("Compass")}>
+                    </TouchableOpacity> */}
+                    {/* <TouchableOpacity style={{ backgroundColor: '#fff', borderRadius: 50 }} onPress={() => this.props.navigation.navigate("Compass")}>
                         <Image source={require('../assets/qiblah_f.png')} style={{ width: 20, height: 20 }} ></Image>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => this.props.navigation.navigate("Notification")}>
                         <Image
                             source={require('../assets/bell.png')}
@@ -134,11 +133,12 @@ class HeaderTop extends Component {
                            
                                 }}>
                                 <Image
-                                    source={require('../assets/pp_f.png')}
+                                    source={require('../assets/more.png')}
                                     style={{
                                         height: 30,
                                         width: 30,
-                                        resizeMode: "contain"
+                                        resizeMode: "contain",
+                                        tintColor:"#fff"
 
                                     }} /></TouchableOpacity>}
                             onRequestClose={() => this.setState({ visible: false })}
@@ -154,7 +154,7 @@ class HeaderTop extends Component {
                             <MenuItem onPress={() => {
                                 this.setState({ visible: false });
                                 this.logout()
-                            }}>{i18n.t('Logout')}</MenuItem>
+                            }}>{i18n.t('Logout١')}</MenuItem>
                             <MenuDivider />
                         </Menu>
                     </View>

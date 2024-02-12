@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import API from "../api/";
 import Axios from 'axios'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
 import CheckBox from 'react-native-check-box'
 import { open } from '../store';
 import { Backdrop } from 'react-native-backdrop';
@@ -26,6 +26,7 @@ import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
 import { Container } from 'native-base';
 import Select from './components/select';
+import axios from 'axios';
 
 class StudentAttendance extends React.Component {
 
@@ -63,13 +64,13 @@ class StudentAttendance extends React.Component {
     getAttendance = async () => {
         let token = await AsyncStorage.getItem("@moqc:token");
         var course_id = this.props.route.params.course_id
-        const response = await Axios.get(`https://staging.moqc.ae/api/student_attendances/${course_id}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/student_attendances/${course_id}`);
         if (response.status === 200) {
 
             await this.setState({ attendanceList: response.data })
         }
 
-        const res = await Axios.get("https://staging.moqc.ae/api/notes");
+        const res = await axios.get("https://staging.moqc.ae/api/notes");
         if (res.status === 200) {
             this.setState({ notes: res.data })
         }

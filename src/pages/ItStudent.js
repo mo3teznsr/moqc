@@ -15,7 +15,7 @@ import {
     Dimensions,
 } from 'react-native';
 import API from "../api/";
-const Axios = require('axios');
+
 
 import CheckBox from 'react-native-check-box'
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Item, Input, Picker, Form } from 'native-base';
@@ -25,6 +25,7 @@ import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
 import { ActivityIndicator } from 'react-native-paper';
 import HeaderTop from './Header'
+import axios from 'axios';
 
 
 class ItStudent extends React.Component {
@@ -55,10 +56,11 @@ class ItStudent extends React.Component {
     getStudents = async () => {
         this.setState({ show_spinner: true })
         let token = await AsyncStorage.getItem("@moqc:token")
-        const response = await Axios.get(`https://staging.moqc.ae/api/students`,
+        const response = await axios.get(`https://staging.moqc.ae/api/students`,
             {
                 headers: { "token": token }
             });
+            console.l
         if (response.status === 200) {
             this.setState({ show_spinner: false })
             this.setState({
@@ -73,18 +75,44 @@ class ItStudent extends React.Component {
 
     renderItem = ({ item }) => (
 
-        <View>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("ItStudentView", { st_id: item.id })}
-                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderRadius: 10, borderWidth: 1, borderColor: '#D5D5D5', padding: 10, margin: 10 }}>
-                <View>
+        <View style={{marginHorizontal:10,borderRadius:10,borderColor:"#999",borderWidth:1,paddingHorizontal:10,paddingVertical:5,marginBottom:10}}>
+           
+                <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                    <View>
+                    <Text style={{ fontWeight: 'bold' }}>{i18n.t('Name')}</Text> 
                     <Text>   {item.first_name }</Text>
-                    <Text>     {item.student_email}</Text>
-                    <Text>    {item.contact_phone}</Text>
+                    </View>
+
+                    <View>
+                    <Text style={{ fontWeight: 'bold' }}>{i18n.t('Email')}</Text> 
+                    <Text>    {item.student_email}</Text>
+                    </View>
+                  
+                    
+                    
                 </View>
-                <View>
-                    <Text style={{ padding: 10, color: '#ffff', backgroundColor: '#222643', fontWeight: 'bold', borderRadius: 10 }}>{i18n.t('View')}</Text>
+                <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                    <View>
+                    <Text style={{ fontWeight: 'bold',textAlign:"left" }}>{i18n.t('Phone')}</Text> 
+                     <Text>   {item.contact_phone}</Text>
+                    </View>
+                    <View>
+                    <Text style={{ fontWeight: 'bold',textAlign:"left" }}>{i18n.t('Course')}</Text> 
+                     <Text>   {item.course[`course_name_${i18n.language}`]}</Text>
+                    </View>
+                    
                 </View>
-            </TouchableOpacity>
+               
+               
+           
+            <View>
+                 <TouchableOpacity
+                 style={{ padding: 10,marginTop:5, color: '#ffff',textAlign:"center", backgroundColor: '#222643', fontWeight: 'bold', borderRadius: 10 }}
+                  onPress={() => this.props.navigation.navigate("ItStudentView", { st_id: item.id })}
+               >
+                    <Text style={{color:"#fff",textAlign:"center"}} >{i18n.t('View')}</Text>
+                    </TouchableOpacity>
+                </View>
         </View>
 
     );

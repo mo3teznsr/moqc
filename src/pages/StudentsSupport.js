@@ -28,11 +28,12 @@ import DropShadow from "react-native-drop-shadow";
 import Footer from "./Footer";
 import HeaderTop from "./Header";
 import API from "../api";
-import qs from 'qs';
+
 import { WebView } from 'react-native-webview';
 import i18n from '../i18n';
 import Video from 'react-native-video';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
+import Select from './components/select';
 
 
 const data = [
@@ -51,6 +52,7 @@ class StudentsSupport extends React.Component {
         super(props);
         
         this.state = {
+            courses:[],
             selected: "4",
             students: "none",
             students_approved: "none",
@@ -77,6 +79,7 @@ class StudentsSupport extends React.Component {
             lessondate:"",
             suggestions:"",
             showDate:false,
+            showCourse:false,
             reasoins:["name","nationality","Date of birth","Gender","Qualification","Contact number","Country","email","Memorized Juz'","course"]
         };
 
@@ -131,6 +134,13 @@ class StudentsSupport extends React.Component {
         this.load_data();
         this.getStudents();
 
+        axios.get("https://staging.moqc.ae/api/courses").then(res=>{
+          
+            this.setState({
+                courses:res.data
+
+            })
+        })
 
     }
     getStudents = async () => {
@@ -139,7 +149,7 @@ class StudentsSupport extends React.Component {
         this.setState({ showBut: show })
         await API.getStudents(user)
             .then(resp => {
-               
+               console.log(resp)
 
                 var student_data = [];
               /*  resp.student_data.map((m) => {
@@ -159,6 +169,8 @@ class StudentsSupport extends React.Component {
                 
 
             })
+
+       
 
     }
     updateIframe = (val) => {
@@ -210,7 +222,7 @@ class StudentsSupport extends React.Component {
                             <View
                                 style={{
                                     elevation: 1,
-
+                                    marginBottom:20,
                                     borderColor: "#D5D5D5",
                                     borderRadius: 10,
                                     backgroundColor: "white",
@@ -230,7 +242,7 @@ class StudentsSupport extends React.Component {
                                             borderWidth: 1, marginVertical: 10,
                                         }} />
                                 </View> */}
-
+                                <ScrollView>
                                {this.state.students? <View style={{ justifyContent: 'space-between', margin: 20 }}>
                                
                                     <View style={{ flex: 1 }}>
@@ -302,32 +314,58 @@ class StudentsSupport extends React.Component {
                                     </View>
 
                                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }}>
-                                        <Text style={{ fontWeight: "bold" }}>{this.state.students?.country.id==230? i18n.t('Emirates ID'):i18n.t('Passport')}:</Text>
+                                        <Text style={{ fontWeight: "bold" }}>{ i18n.t('Emirates ID')}:</Text>
                                        <TouchableOpacity onPress={async()=>{
                                         this.setState({showId:true})
                                        }}>
                                      <Image source={require("../assets/eye.png")} style={{width:25,height:25}} />
                                        </TouchableOpacity>
                                     </View>
+
+                                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }}>
+                                        <Text style={{ fontWeight: "bold" }}>{i18n.t('Passport')}:</Text>
+                                       <TouchableOpacity onPress={async()=>{
+                                        this.setState({showId:true})
+                                       }}>
+                                     <Image source={require("../assets/eye.png")} style={{width:25,height:25}} />
+                                       </TouchableOpacity>
+                                    </View>
+
                                     <Modal visible={this.state.showId} ><SafeAreaView style={{flex:1}}>
                                         <View style={{flexDirection:"row",justifyContent:"space-between",padding:10}}>
-                                         <Text style={{ fontWeight: "bold" }}>{this.state.students?.country.id==230? i18n.t('Emirates ID'):i18n.t('Passport')}</Text> 
+                                         <Text style={{ fontWeight: "bold" }}>{this.state.students?.country.id==230? i18n.t('Documents'):i18n.t('Documents')}</Text> 
                                         <TouchableHighlight onPress={()=>this.setState({showId:false})} style={{backgroundColor:"#fff",padding:2}}>
                                         <Text>{i18n.t('Close')}</Text></TouchableHighlight>
                                        
                                         </View>
 
-                                        <View style={{padding:20,justifyContent:"center"}}>
-                                           
+                                       
+                                        <View style={{padding:20,justifyContent:"center",pag:10}}>
+                                        <Text style={{ fontWeight: "bold" }}>{ i18n.t('Emirates ID')}</Text> 
                                             <Image 
-                                            style={{height:300,resizeMode:"contain"}}
-                                            source={{uri:this.state.students?.country.id==230? "https://staging.moqc.ae/"+this.state.students?.emirates_id:"https://staging.moqc.ae/"+this.state.students?.passport}} />
-                                        </View></SafeAreaView>
+                                            style={{height:150,resizeMode:"contain"}}
+                                            source={{uri: "https://staging.moqc.ae/"+this.state.students?.emirates_id}} />
+                                        </View>
+
+                                       
+                                        
+                                      
+                                       
+                                        
+
+                                        <View style={{padding:20,justifyContent:"center",gap:10}}>
+                                        <Text style={{ fontWeight: "bold" }}>{i18n.t('Passport')}</Text> 
+                                            <Image 
+                                            style={{height:150,resizeMode:"contain"}}
+                                            source={{uri:"https://staging.moqc.ae/"+this.state.students?.passport}} />
+                                        </View>
+                                        
+                                        </SafeAreaView>
                                     </Modal>
 
-                                    <Modal visible={this.state.showReject} ><SafeAreaView style={{flex:1}}>
+                                    <Modal visible={this.state.showReject} ><SafeAreaView style={{flex:1,direction:i18n.language==="en"?"ltr":"rtl"}}>
                                         <View style={{flexDirection:"row",justifyContent:"space-between",padding:10}}>
-                                         <Text style={{ fontWeight: "bold" }}>{this.state.students?.country.id==230? i18n.t('Reject student'):i18n.t('Passport')}</Text> 
+                                         <Text style={{ fontWeight: "bold" }}>{this.state.students?.country.id==230? i18n.t('Reject student'):i18n.t('Reject student')}</Text> 
                                         <TouchableHighlight onPress={()=>this.setState({showReject:false})} style={{backgroundColor:"#fff",padding:2}}>
                                         <Text>{i18n.t('Close')}</Text></TouchableHighlight>
                                        
@@ -351,7 +389,7 @@ class StudentsSupport extends React.Component {
                                                             }
                                                             this.setState({change_rejection:this.state.change_rejection})
                                                             }} ></CheckBox>
-                                                        <Text style={{marginHorizontal:20}}>{item}</Text>
+                                                        <Text style={{marginHorizontal:20}}>{i18n.t(item)}</Text>
                                                     </View>
                                                 })}
                                             </ScrollView>
@@ -366,9 +404,14 @@ class StudentsSupport extends React.Component {
                                         </View></SafeAreaView>
                                     </Modal>
                                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }}>
-                                        <Text style={{ fontWeight: "bold" }}>{this.state.students?.country.id==230? i18n.t('Emirates Expiry'):i18n.t('Passport Expiry')}:</Text>
+                                        <Text style={{ fontWeight: "bold" }}>{i18n.t('Emirates Expiry')}:</Text>
                                         
-                                       <Text style={{ fontWeight: "normal" }}>{ this.state.students?.country.id==230?this.state.students?.expiry_date:this.state.students?.passport_expiry}</Text>
+                                       <Text style={{ fontWeight: "normal" }}>{ this.state.students?.expiry_date}</Text>
+                                    </View>
+                                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginVertical: 5 }}>
+                                        <Text style={{ fontWeight: "bold" }}>{i18n.t('Passport Expiry')}:</Text>
+                                        
+                                       <Text style={{ fontWeight: "normal" }}>{ this.state.students?.passport_expiry}</Text>
                                     </View>
                                     <View style={{ justifyContent: "center", marginVertical: 5 }}>
                                         <Text style={{ fontWeight: "bold" }}>{i18n.t('Audio')}:</Text>
@@ -424,14 +467,16 @@ class StudentsSupport extends React.Component {
                                         : null}
 
                                     <Modal visible={this.state.showAccept}  ><SafeAreaView style={{flex:1}}>
-                                        <View style={{flexDirection:"row",justifyContent:"space-between",padding:10}}>
-                                         <Text style={{ fontWeight: "bold" }}>{this.state.students?.country.id==230? i18n.t('Approve student'):i18n.t('Passport')}</Text> 
+                                        <View style={{flexDirection:"row",justifyContent:"space-between",padding:10,borderBottomWidth:1}}>
+                                         <Text style={{ fontWeight: "bold" }}>{ i18n.t('Approve student')}</Text> 
                                         <TouchableHighlight onPress={()=>this.setState({showAccept:false})} style={{backgroundColor:"#fff",padding:2}}>
                                         <Text>{i18n.t('Close')}</Text></TouchableHighlight>
                                        
                                         </View>
+                                        
                                         <View style={{paddingHorizontal:15}} >
-                                            <Text style={{fontSize:20,fontWeight:"600",marginVertical:10}}>{i18n.t("Please Rate the student level")}</Text>
+                                            <Text style={{fontSize:20,fontWeight:"600",textAlign:"center",marginVertical:10}}>
+                                                {i18n.t("Please Rate the student level")}</Text>
                                         <View style={{flexDirection:"row",justifyContent:"center"}}>
                                             <View style={{justifyContent:"center",paddingHorizontal:10}}>
                                                 <Pressable onPress={()=>this.setState({level:1})}>
@@ -448,7 +493,7 @@ class StudentsSupport extends React.Component {
                                                     <Image source={{uri:"https://staging.moqc.ae/assets/admin/icons/3.png"}} style={{width:75,height:75}}  />
                                                 </View>
                                                 </Pressable>
-                                                <Text style={{textAlign:"center"}}>{i18n.t("Excellent")}</Text>
+                                                <Text style={{textAlign:"center"}}>{i18n.t("Medium")}</Text>
                                             </View>
 
                                             <View style={{justifyContent:"center",paddingHorizontal:10}}>
@@ -461,24 +506,40 @@ class StudentsSupport extends React.Component {
                                             </View>
                                         </View>
 
-                                        <Text>{i18n.t("Suggestions")}</Text>
+                                        <Text style={styles.label}>{i18n.t("Course")}</Text>
+                                        <Select
+      list={this.state.courses}
+      title={i18n.t('Course')}
+      show={this.state.showCourse}
+      field="id"
+      selected={this.state.students.course}
+      open={()=>this.setState({showCourse:true})}
+      onSelect={(item)=>{
+       this.setState({showCourse:false})
+        
+        this.setState({students:{...this.state.students,course:item}})
+        }}
+      render={i18n.language=='ar'?'course_name_ar': 'course_name_en'}
+      close={()=>this.setState({showCourse:false})} />
+
+                                        <Text style={styles.label}>{i18n.t("Suggestions")}</Text>
                                         <Textarea value={this.state.suggestions} onChangeText={(value)=>this.setState({suggestions:value})} style={{borderRadius:10,borderWidth:1,marginVertical:10}}></Textarea>
 
-                                        <Text>{i18n.t("Capacity of Memorization")}</Text>
+                                        {/* <Text style={styles.label}>{i18n.t("Capacity of Memorization")}</Text>
                                         <Textarea value={this.state.capacity} onChangeText={(value)=>this.setState({capacity:value})} style={{borderRadius:10,borderWidth:1,marginVertical:10}}></Textarea>
 
-                                        <Text>{i18n.t("Group name")}</Text>
+                                        <Text style={styles.label}>{i18n.t("Group name")}</Text>
                                         <Textarea value={this.state.groupname} onChangeText={(value)=>this.setState({groupname:value})} style={{borderRadius:10,borderWidth:1,marginVertical:10}}></Textarea>
-                                        
+                                         */}
 
-                                        <Text>{i18n.t("Lesson Date")}</Text>
+                                        {/* <Text>{i18n.t("Lesson Date")}</Text>
                                         <Pressable onPress={()=>this.setState({showDate:true})}>
                                         <View style={{flexDirection:"row",justifyContent:"space-between",borderBottomWidth:1,paddingHorizontal:15}}>
                                          <Text style={{fontSize:20}}>{this.state.lessondate} </Text>
 
                                         <Image source={require("../assets/calendar.png")} style={{width:25,height:25}}  />
                                         </View>
-                                    </Pressable>
+                                    </Pressable> */}
                                         
                                     {this.state.showDate ? <DateTimePicker
                                  
@@ -495,7 +556,7 @@ class StudentsSupport extends React.Component {
                                 />:<Text></Text>}
 
                                 <TouchableHighlight onPress={async()=>{
-                                    if(this.state.suggestions&&this.state.level&&this.state.capacity&&this.state.lessondate)
+                                    if(this.state.level&&this.state.students.course)
                                     {
                                   
             
@@ -505,9 +566,9 @@ class StudentsSupport extends React.Component {
 
                                         
                                    var res=   await  axios.post("https://staging.moqc.ae/api/accept_student/"+this.state.students.id,
-                                  qs.stringify( {"status":"approve","capacity":this.state.capacity,"groupname":this.state.groupname,"suggestions":this.state.suggestions,"level":this.state.level}),{headers:{token:token}})
+                                  JSON.stringify( {"status":"approve","capacity":this.state.capacity,"groupname":this.state.groupname,"suggestions":this.state.suggestions,"level":this.state.level}),{headers:{token:token}})
                                      
-                                       console.log(res.data)
+                                      
                                         Alert.alert(
                                             "Success",
                                             "Student Approved",
@@ -558,6 +619,7 @@ class StudentsSupport extends React.Component {
 
 
                                 </View>:<View style={{flex:1,justifyContent:"center"}}><Spinner/></View>}
+                                </ScrollView>
                             </View>
                         </DropShadow>
                     </Content>
@@ -599,6 +661,9 @@ export default withTranslation()(StudentsSupport)
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1
+    },
+    label:{
+        textAlign:"left"
     },
     sectionWrapper: {
         padding: 20

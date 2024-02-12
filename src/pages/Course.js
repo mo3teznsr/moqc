@@ -61,7 +61,7 @@ class Course extends React.Component {
     getCourses = async () => {
         this.setState({show_spinner:true})
         
-        const response = await Axios.get(`https://staging.moqc.ae/api/courses/`);
+        const response = await axios.get(`https://staging.moqc.ae/api/courses/`);
         this.setState({show_spinner:false})
         if (response.status === 200) {
             open.next(false)
@@ -76,7 +76,7 @@ class Course extends React.Component {
         body.append("class_name", this.state.name_en)
         body.append("name_ar", this.state.name_ar)
         body.append("class_teacher", this.state.teacher)
-        const response = await Axios.post(`https://staging.moqc.ae/api/classes/create`, body);
+        const response = await axios.post(`https://staging.moqc.ae/api/classes/create`, body);
 
         if (response.status === 200) {
             this.setState({ createModal: false })
@@ -90,7 +90,7 @@ class Course extends React.Component {
         body.append("class_name", this.state.updatename_en)
         body.append("name_ar", this.state.updatename_ar)
         body.append("class_teacher", this.state.updateteacher)
-        const response = await Axios.post(`https://staging.moqc.ae/classes/update`, body);
+        const response = await axios.post(`https://staging.moqc.ae/classes/update`, body);
 
         if (response.status === 200) {
             this.setState({ updateModal: false })

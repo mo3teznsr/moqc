@@ -18,13 +18,14 @@ import {
 } from 'react-native';
 import API from "../api/";
 import Axios from 'axios'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from 'react-native-date-picker';
 import CheckBox from 'react-native-check-box'
 import { open } from '../store';
 import { Backdrop } from 'react-native-backdrop';
 import Toast from 'react-native-simple-toast';
 import { AsyncStorage } from 'react-native';
 import i18n from '../i18n';
+import axios from 'axios';
 
 
 class TeamAttendance extends React.Component {
@@ -59,7 +60,7 @@ class TeamAttendance extends React.Component {
     }
 
     getAttendance = async () => {
-        const response = await Axios.get(`https://staging.moqc.ae/api/attendances?date=${this.state.formattedDate}`);
+        const response = await axios.get(`https://staging.moqc.ae/api/attendances?date=${this.state.formattedDate}`);
         if (response.status === 200) {
 
             await this.setState({ attendanceList: response.data })
@@ -74,7 +75,7 @@ class TeamAttendance extends React.Component {
         var body = new FormData()
         body.append("users", JSON.stringify(this.state.attendanceList))
         body.append("date", this.state.formattedDate)
-        const response = await Axios.post(`https://staging.moqc.ae/api/attendances_update`, body,
+        const response = await axios.post(`https://staging.moqc.ae/api/attendances_update`, body,
             { headers: { "token": token } });
         this.setState({ show_spinner: false })
 

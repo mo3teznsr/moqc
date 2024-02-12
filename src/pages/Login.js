@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withTranslation } from 'react-i18next';
 
-import { StyleSheet, ImageBackground, Image, I18nManager, View, Alert } from 'react-native'
+import { StyleSheet, ImageBackground, Image, I18nManager, View, Alert,TextInput } from 'react-native'
 import {
     Container,
     Header,
@@ -14,14 +14,13 @@ import {
     Left,
     Right,
     Item,
-    Input,
     Form,
     Footer,
     FooterTab
 } from "native-base";
 import DropShadow from "react-native-drop-shadow";
 import FooterBottom from "./Footer";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {  TouchableOpacity } from "react-native-gesture-handler";
 import { AsyncStorage } from 'react-native';
 import API from "../api/";
 import Axios from 'axios'
@@ -142,7 +141,7 @@ class Login extends Component {
             <Container
                 style={{
                     display: 'flex',
-                    flex: 10,
+                   
                     direction: this.state.rtl
                         ? 'rtl'
                         : 'ltr'
@@ -153,21 +152,21 @@ class Login extends Component {
                     style={{
                         width: '100%',
                         height: '100%',
-                        flex: 10
+                      
                     }}>
 
                     <View
                         style={{
                             backgroundColor: '#31314f',
                             borderBottomColor: '#31314f',
-                            height:120
+                            height:80
                         }}>
 
 
 
                         <Title
                             style={{
-                                flex: 1,
+                              
                                 marginTop: 10,
                                 color: '#8f7c7b',
                                 textAlign: "center"
@@ -178,21 +177,26 @@ class Login extends Component {
                     </View>
                     <View
                         style={{
-                            backgroundColor: '#31314f',
-                            flex: .8,
+                            marginTop:-30
+                          
                         }}
                     >
                         <View
                             style={{
-                                flex: 1,
+                                
                                 justifyContent: "center",
-                                alignItems: "center"
+                                alignItems: "center",
+                                
                             }}>
                             <Image
                                 style={{
                                     height: 150,
                                     width: 150,
-                                    marginTop: 100
+                                   borderRadius:150,
+                                  
+                                
+
+                                    
                                 }}
                                 source={require('../assets/round.png')} />
 
@@ -205,18 +209,18 @@ class Login extends Component {
                     <View
                         padder
                         style={{
-                            flex: 4,
-                            marginTop: 10
+                         
+                            
                         }}>
                         <View style={{
-                            flex: 1,
+                           
                             marginTop: 20
 
                         }}>
                         </View>
 
-                        <Form style={{
-                            flex: 2,
+                        <View style={{
+                          
 
                         }}>
                             <DropShadow
@@ -246,48 +250,67 @@ class Login extends Component {
                                 >
 
 
-                                    <Item
+                                    <View
                                         style={{
-                                            elevation: 0,
-                                            borderColor: "#fff",
-                                            borderRadius: 0,
+                                           
+                                            borderColor: "#eee",
+                                            borderRadius: 12,
+                                            borderWidth:1,
                                             backgroundColor: "white",
                                             padding: 5,
-                                            borderBottomColor: "black"
+                                            flexDirection:"row",
+                                            alignItems:"center",
+                                            gap:25,
+                                            paddingHorizontal:5,
+                                            paddingVertical:10,
+                                           
+                                            marginBottom:10
+
                                         }}>
                                         <Icon active type="FontAwesome" name="user" />
-                                        <Input
+                                        <TextInput
+                                        
                                             style={{
                                                 textAlign: this.state.rtl
                                                     ? 'right'
-                                                    : 'left'
+                                                    : 'left',
+                                                   flex:1,
+                                                   marginStart:10
+
                                             }}
                                             value={this.state.username}
                                             onChangeText={(username) => this.setState({ username })}
                                             placeholder={i18n.t("Username")} />
-                                    </Item>
+                                    </View>
 
-                                    <Item
+                                    <View
                                         style={{
-                                            elevation: 0,
-                                            borderColor: "#fff",
-                                            borderRadius: 0,
+                                            borderColor: "#eee",
+                                            borderRadius: 12,
+                                            borderWidth:1,
                                             backgroundColor: "white",
                                             padding: 5,
-                                            borderBottomColor: "black"
+                                            flexDirection:"row",
+                                            alignItems:"center",
+                                            gap:25,
+                                            paddingHorizontal:5,
+                                            paddingVertical:10,
+                                           
                                         }}>
                                         <Icon active type="FontAwesome" name="lock" />
-                                        <Input
+                                        <TextInput
                                             style={{
                                                 textAlign: this.state.rtl
                                                     ? 'right'
-                                                    : 'left'
+                                                    : 'left',
+                                                    flex:1,
+                                                    marginStart:10,
                                             }}
                                             secureTextEntry={true}
                                             value={this.state.password}
                                             onChangeText={(password) => this.setState({ password })}
                                             placeholder={i18n.t("Password")} />
-                                    </Item>
+                                    </View>
                                     <View style={{justifyContent:"center",alignItems:"center"}}>
 <TouchableOpacity
                                 onPress={(e) => this.checkLogin()}
@@ -329,26 +352,61 @@ class Login extends Component {
 
                             </DropShadow>
                             
-                        </Form>
+                        </View>
                         <View
                             style={{
-                                flex: 1,
+                              
                                 jusifyContent: 'center',
                                 alignItems: "center",
-                                marginTop: 5,
+                                marginTop: 15,
                                 fontWeight: "bold",
                             }}>
                             <Text>{i18n.t('Dont have an account?')} <Text></Text>
                                 <Text
-                                    onPress={() => this.props.navigation.navigate("Register")}
+                                    onPress={() => this.props.navigation.navigate("Signup")}
                                     style={{
                                         color: '#ed9995',
                                         fontWeight: "bold"
                                     }}>
                                     {i18n.t('REGISTER')}</Text>
                             </Text>
+                            
 
                         </View>
+
+                        <TouchableOpacity
+                                onPress={(e) => this.props.navigation.navigate("Home") }
+                            >
+                                <View
+                                    style={{
+                                        elevation: 1,
+                                        
+                                        borderColor: "#fff",
+                                        borderRadius: 30,
+                                        backgroundColor: "white",
+                                        padding: 1,
+                                        borderBottomColor: "black",
+                                        
+                                        marginTop: 5,
+                                        marginBottom: 0,
+                                      
+                                        padding: 10,
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+
+
+                                    <Text style={{ fontWeight: "bold" ,textAlign:"center"}}>{i18n.t('Skip')}
+                                       </Text>
+
+                                </View>
+
+
+
+                            </TouchableOpacity>
                         {/* <View
                             style={{
                                 marginTop: 5,
@@ -416,7 +474,7 @@ class Login extends Component {
 
 
 
-
+<View style={{height:120}}></View>
                         <Social/>
                     </View>
                 </ImageBackground>
